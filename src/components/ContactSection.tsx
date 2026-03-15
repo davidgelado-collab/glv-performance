@@ -26,7 +26,7 @@ const ContactSection = () => {
 
             <div className="mt-8 space-y-4">
               {[
-                { icon: Phone, text: "+XX XXX XXX XXX" },
+                { icon: Phone, text: "+34 696 608 547" },
                 { icon: Mail, text: "info@glvperformance.com" },
                 { icon: MapPin, text: "Madrid, España" },
               ].map(({ icon: Icon, text }) => (
