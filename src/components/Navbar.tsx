@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   { label: "Servicios", href: "#servicios" },
-  { label: "Builds", href: "#builds" },
+  { label: "Trabajos", href: "#trabajos" },
   { label: "Contacto", href: "#contacto" },
 ];
 

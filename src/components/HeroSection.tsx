@@ -51,7 +51,7 @@ const HeroSection = () => {
                 Nuestros Servicios
               </Button>
               <Button variant="heroOutline" size="lg">
-                Ver Builds
+                Ver Trabajos
               </Button>
             </div>
           </motion.div>

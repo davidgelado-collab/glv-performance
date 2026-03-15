@@ -32,7 +32,7 @@ const BuildsSection = () => {
             Portfolio
           </span>
           <h2 className="mt-3 font-display text-4xl font-bold uppercase md:text-5xl">
-            Nuestros Builds
+            Nuestros Trabajos
           </h2>
         </motion.div>
 
