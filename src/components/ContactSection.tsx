@@ -28,7 +28,7 @@ const ContactSection = () => {
               {[
                 { icon: Phone, text: "+XX XXX XXX XXX" },
                 { icon: Mail, text: "info@glvperformance.com" },
-                { icon: MapPin, text: "Tu ciudad, País" },
+                { icon: MapPin, text: "Madrid, España" },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-primary/10">
