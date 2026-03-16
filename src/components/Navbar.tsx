@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import logoGlv from "@/assets/logo-glv.png";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
