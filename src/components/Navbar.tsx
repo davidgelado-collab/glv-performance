@@ -17,7 +17,7 @@ const Navbar = () => {
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-border/30 bg-background/70 backdrop-blur-lg">
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
         <a href="#" className="flex items-center">
-          <img src={logoGlv} alt="GLV Performance" className="h-10 w-auto" />
+          <img src={logoGlv} alt="GLV Performance" className="h-20 w-auto" />
         </a>
 
         {/* Desktop */}
