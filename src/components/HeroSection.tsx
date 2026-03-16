@@ -47,12 +47,16 @@ const HeroSection = () => {
             </p>
 
             <div className="flex gap-4">
-              <Button variant="hero" size="lg">
-                Nuestros Servicios
-              </Button>
-              <Button variant="heroOutline" size="lg">
-                Ver Trabajos
-              </Button>
+              <a href="#servicios">
+                <Button variant="hero" size="lg">
+                  Nuestros Servicios
+                </Button>
+              </a>
+              <a href="#trabajos">
+                <Button variant="heroOutline" size="lg">
+                  Ver Trabajos
+                </Button>
+              </a>
             </div>
           </motion.div>
         </div>
