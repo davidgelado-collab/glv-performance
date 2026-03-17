@@ -24,7 +24,7 @@ export const carDatabase: CarBrand[] = [
     name: "Audi",
     models: [
       {
-        name: "A1 (8X)",
+        name: "80",
         engines: [
           { name: "1.9 TDI 90hp", year: "1991-1995", originalHP: 90, originalTorque: 202, stage1HP: 115, stage1Torque: 260, fuel: "Diesel" },
         ],
