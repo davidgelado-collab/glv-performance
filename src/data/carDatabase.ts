@@ -56,7 +56,15 @@ export const carDatabase: CarBrand[] = [
         ],
       },
       {
-        name: "A3 (8V)",
+        name: "A1 (GB)",
+        engines: [
+          { name: "25 TFSI (1.0T) 95hp", year: "2018+", originalHP: 95, originalTorque: 175, stage1HP: 130, stage1Torque: 240, fuel: "Gasolina" },
+          { name: "1.2 TFSI 105hp", year: "2010-2014", originalHP: 105, originalTorque: 175, stage1HP: 140, stage1Torque: 225, fuel: "Gasolina" },
+          { name: "1.4 TFSI 122hp", year: "2010-2014", originalHP: 122, originalTorque: 200, stage1HP: 155, stage1Torque: 270, fuel: "Gasolina" },
+          { name: "1.4 TFSI 140hp (CPTA)", year: "2010-2014", originalHP: 140, originalTorque: 250, stage1HP: 190, stage1Torque: 320, fuel: "Gasolina" },
+        ],
+      },
+      {name: "A3 (8V)",
         engines: [
           { name: "1.2 TFSI 110hp", year: "2012-2016", originalHP: 110, originalTorque: 175, stage1HP: 140, stage1Torque: 225, fuel: "Gasolina" },
           { name: "1.4 TFSI 125hp", year: "2012-2016", originalHP: 125, originalTorque: 200, stage1HP: 155, stage1Torque: 250, fuel: "Gasolina" },
