@@ -55,7 +55,7 @@ export const carDatabase: CarBrand[] = [
         ],
       },
       {
-        name: "A1 (GB)",
+        name: "A1 (GB 2018→)",
         engines: [
           { name: "25 TFSI (1.0T) 95hp", year: "2018+", originalHP: 95, originalTorque: 175, stage1HP: 130, stage1Torque: 240, fuel: "Gasolina" },
           { name: "30 TFSI (1.0T) 116hp", year: "2018+", originalHP: 116, originalTorque: 200, stage1HP: 140, stage1Torque: 240, fuel: "Gasolina" },
