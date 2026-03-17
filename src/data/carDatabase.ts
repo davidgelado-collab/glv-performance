@@ -60,12 +60,12 @@ export const carDatabase: CarBrand[] = [
         ],
       },
       {
-      name: "A1 (GB 2018→)",
+      name: "A1 (GB 2018 →)",
         engines: [
-          { name: "25 TFSI (1.0T) 95hp", year: "2018+", originalHP: 95, originalTorque: 175, stage1HP: 130, stage1Torque: 240, fuel: "Gasolina" },
-          { name: "30 TFSI (1.0T) 116hp", year: "2018+", originalHP: 116, originalTorque: 200, stage1HP: 140, stage1Torque: 240, fuel: "Gasolina" },
-          { name: "35 TFSI (1.5T) 150hp", year: "2018+", originalHP: 150, originalTorque: 250, stage1HP: 185, stage1Torque: 310, fuel: "Gasolina" },
-          { name: "40 TFSI (2.0T) 200hp", year: "2018+", originalHP: 200, originalTorque: 320, stage1HP: 245, stage1Torque: 430, fuel: "Gasolina" },
+          { name: "25 TFSI (1.0T) 95hp", year: "2018 →", originalHP: 95, originalTorque: 175, stage1HP: 130, stage1Torque: 240, fuel: "Gasolina" },
+          { name: "30 TFSI (1.0T) 116hp", year: "2018 →", originalHP: 116, originalTorque: 200, stage1HP: 140, stage1Torque: 240, fuel: "Gasolina" },
+          { name: "35 TFSI (1.5T) 150hp", year: "2018 →", originalHP: 150, originalTorque: 250, stage1HP: 185, stage1Torque: 310, fuel: "Gasolina" },
+          { name: "40 TFSI (2.0T) 200hp", year: "2018 →", originalHP: 200, originalTorque: 320, stage1HP: 245, stage1Torque: 430, fuel: "Gasolina" },
         ],
       },
     ],
