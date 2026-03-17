@@ -96,7 +96,7 @@ export const carDatabase: CarBrand[] = [
         ],
       },
       {
-        name: "Sandero ( 2013-2015 )",
+        name: "Sandero ( 2016-2020 )",
         engines: [
           { name: "0.9 TCE 90hp", year: "2013-2015", originalHP: 90, originalTorque: 135, stage1HP: 107, stage1Torque: 175, fuel: "Gasolina" },
           { name: "1.0 SCE 73hp", year: "2013-2015", originalHP: 73, originalTorque: 97, stage1HP: 85, stage1Torque: 110, fuel: "Gasolina" },
