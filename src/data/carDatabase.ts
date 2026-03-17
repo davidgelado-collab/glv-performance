@@ -40,13 +40,10 @@ export const carDatabase: CarBrand[] = [
           { name: "2.0 TFSI 256hp", year: "2010-2014", originalHP: 256, originalTorque: 350, stage1HP: 300, stage1Torque: 420, fuel: "Gasolina" },
           { name: "S1 2.0 TFSI 256hp", year: "2010-2014", originalHP: 231, originalTorque: 370, stage1HP: 300, stage1Torque: 440, fuel: "Gasolina" },
 
-          { name: "1.0 TFSI 95hp", year: "2015-2018", originalHP: 95, originalTorque: 160, stage1HP: 130, stage1Torque: 220, fuel: "Gasolina" },
-          { name: "1.4 TFSI 125hp", year: "2014-2018", originalHP: 125, originalTorque: 200, stage1HP: 155, stage1Torque: 250, fuel: "Gasolina" },
-          { name: "1.0 TSI 95hp", year: "2018+", originalHP: 95, originalTorque: 175, stage1HP: 130, stage1Torque: 230, fuel: "Gasolina" },
-          { name: "1.0 TSI 116hp", year: "2018+", originalHP: 116, originalTorque: 200, stage1HP: 145, stage1Torque: 250, fuel: "Gasolina" },
-          { name: "1.5 TFSI 150hp", year: "2018+", originalHP: 150, originalTorque: 250, stage1HP: 185, stage1Torque: 310, fuel: "Gasolina" },
-          { name: "2.0 TFSI S1 231hp", year: "2014-2018", originalHP: 231, originalTorque: 370, stage1HP: 300, stage1Torque: 440, fuel: "Gasolina" },
-          { name: "1.6 TDI 116hp", year: "2015-2018", originalHP: 116, originalTorque: 250, stage1HP: 145, stage1Torque: 310, fuel: "Diésel" },
+          { name: "1.6 TDI CR 90hp", year: "2010-2014", originalHP: 90, originalTorque: 230, stage1HP: 140, stage1Torque: 320, fuel: "Diésel" },
+          { name: "1.6 TDI CR 105hp", year: "2010-2014", originalHP: 105, originalTorque: 250, stage1HP: 140, stage1Torque: 320, fuel: "Diésel" },
+          { name: "2.0 TDI CR 136hp", year: "2010-2014", originalHP: 136, originalTorque: 320, stage1HP: 185, stage1Torque: 400, fuel: "Diésel" },
+          { name: "2.0 TDI CR 143hp", year: "2010-2014", originalHP: 143, originalTorque: 320, stage1HP: 185, stage1Torque: 400, fuel: "Diésel" },
         ],
       },
       {
