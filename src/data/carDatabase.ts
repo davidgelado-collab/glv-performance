@@ -24,8 +24,22 @@ export const carDatabase: CarBrand[] = [
     name: "Audi",
     models: [
       {
-        name: "A1",
+        name: "A1 (8X)",
         engines: [
+          { name: "1.9 TDI 90hp", year: "1991-1995", originalHP: 90, originalTorque: 202, stage1HP: 115, stage1Torque: 260, fuel: "Diesel" },
+        ],
+      },
+      {
+        name: "A1 (8X)",
+        engines: [
+          { name: "1.2 TFSI 86hp", year: "2010-2014", originalHP: 86, originalTorque: 160, stage1HP: 140, stage1Torque: 225, fuel: "Gasolina" },
+          { name: "1.2 TFSI 105hp", year: "2010-2014", originalHP: 105, originalTorque: 175, stage1HP: 140, stage1Torque: 225, fuel: "Gasolina" },
+          { name: "1.4 TFSI 122hp", year: "2010-2014", originalHP: 122, originalTorque: 200, stage1HP: 155, stage1Torque: 270, fuel: "Gasolina" },
+          { name: "1.4 TFSI 140hp (CPTA)", year: "2010-2014", originalHP: 140, originalTorque: 250, stage1HP: 190, stage1Torque: 320, fuel: "Gasolina" },
+          { name: "1.4 TFSI 185hp", year: "2010-2014", originalHP: 185, originalTorque: 250, stage1HP: 210, stage1Torque: 300, fuel: "Gasolina" },
+          { name: "2.0 TFSI 256hp", year: "2010-2014", originalHP: 256, originalTorque: 350, stage1HP: 300, stage1Torque: 420, fuel: "Gasolina" },
+          { name: "S1 2.0 TFSI 256hp", year: "2010-2014", originalHP: 231, originalTorque: 370, stage1HP: 300, stage1Torque: 440, fuel: "Gasolina" },
+
           { name: "1.0 TFSI 95hp", year: "2015-2018", originalHP: 95, originalTorque: 160, stage1HP: 130, stage1Torque: 220, fuel: "Gasolina" },
           { name: "1.4 TFSI 125hp", year: "2014-2018", originalHP: 125, originalTorque: 200, stage1HP: 155, stage1Torque: 250, fuel: "Gasolina" },
           { name: "1.0 TSI 95hp", year: "2018+", originalHP: 95, originalTorque: 175, stage1HP: 130, stage1Torque: 230, fuel: "Gasolina" },
