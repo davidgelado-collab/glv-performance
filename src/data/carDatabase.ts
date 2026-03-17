@@ -30,7 +30,7 @@ export const carDatabase: CarBrand[] = [
         ],
       },
       {
-        name: "A1 (8X 2010-2014)",
+      name: "A1 (8X 2010-2014)",
         engines: [
           { name: "1.2 TFSI 86hp", year: "2010-2014", originalHP: 86, originalTorque: 160, stage1HP: 140, stage1Torque: 225, fuel: "Gasolina" },
           { name: "1.2 TFSI 105hp", year: "2010-2014", originalHP: 105, originalTorque: 175, stage1HP: 140, stage1Torque: 225, fuel: "Gasolina" },
@@ -46,7 +46,7 @@ export const carDatabase: CarBrand[] = [
         ],
       },
       {
-        name: "A1 (8X 2015-2017)",
+      name: "A1 (8X 2015-2017)",
         engines: [
           { name: "1.0 TFSI 82hp", year: "2015-2017", originalHP: 82, originalTorque: 160, stage1HP: 140, stage1Torque: 240, fuel: "Gasolina" },
           { name: "1.0 TFSI 95hp", year: "2015-2017", originalHP: 95, originalTorque: 160, stage1HP: 140, stage1Torque: 240, fuel: "Gasolina" },
@@ -59,7 +59,8 @@ export const carDatabase: CarBrand[] = [
           { name: "1.6 TDI 116hp", year: "2015-2017", originalHP: 116, originalTorque: 250, stage1HP: 145, stage1Torque: 310, fuel: "Diésel" },
         ],
       },
-      {name: "A1 (GB 2018→)",
+      {
+      name: "A1 (GB 2018→)",
         engines: [
           { name: "25 TFSI (1.0T) 95hp", year: "2018+", originalHP: 95, originalTorque: 175, stage1HP: 130, stage1Torque: 240, fuel: "Gasolina" },
           { name: "30 TFSI (1.0T) 116hp", year: "2018+", originalHP: 116, originalTorque: 200, stage1HP: 140, stage1Torque: 240, fuel: "Gasolina" },
@@ -69,6 +70,50 @@ export const carDatabase: CarBrand[] = [
       },
     ],
   },
-
-
+  // ─── DACIA ───────────────────────────────────────────────
+  {
+    name: "Dacia",
+    models: [
+      {
+        name: "Sandero ( 2008-2012 )",
+        engines: [
+          { name: "1.2I 16V 75hp", year: "2008-2012", originalHP: 75, originalTorque: 107, stage1HP: 85, stage1Torque: 125, fuel: "Gasolina" },
+          { name: "1.4I 75hp", year: "2008-2012", originalHP: 75, originalTorque: 112, stage1HP: 82, stage1Torque: 122, fuel: "Gasolina" },
+          { name: "1.6I 85hp", year: "2008-2012", originalHP: 85, originalTorque: 135, stage1HP: 95, stage1Torque: 150, fuel: "Gasolina" },
+          { name: "1.6I 16V 105hp", year: "2008-2012", originalHP: 105, originalTorque: 148, stage1HP: 115, stage1Torque: 160, fuel: "Gasolina" },
+          { name: "1.5 DCI 70hp", year: "2008-2012", originalHP: 70, originalTorque: 160, stage1HP: 90, stage1Torque: 200, fuel: "Diesel" },
+          { name: "1.5 DCI 75hp", year: "2008-2012", originalHP: 75, originalTorque: 180, stage1HP: 95, stage1Torque: 220, fuel: "Diesel" },
+          { name: "1.5 DCI 85hp", year: "2008-2012", originalHP: 85, originalTorque: 200, stage1HP: 110, stage1Torque: 250, fuel: "Diesel" },
+          { name: "1.5 DCI 90hp", year: "2008-2012", originalHP: 90, originalTorque: 200, stage1HP: 110, stage1Torque: 250, fuel: "Diesel" },
+        ],
+      },
+      {
+        name: "Sandero ( 2013-2015 )",
+        engines: [
+          { name: "0.9 DCI 90hp", year: "2013-2015", originalHP: 90, originalTorque: 135, stage1HP: 107, stage1Torque: 175, fuel: "Gasolina" },
+          { name: "1.5 DCI 75hp", year: "2013-2015", originalHP: 75, originalTorque: 200, stage1HP: 115, stage1Torque: 260, fuel: "Diesel" },
+          { name: "1.5 DCI 90hp", year: "2013-2015", originalHP: 90, originalTorque: 200, stage1HP: 110, stage1Torque: 250, fuel: "Diesel" },
+        ],
+      },
+      {
+        name: "Sandero ( 2013-2015 )",
+        engines: [
+          { name: "0.9 TCE 90hp", year: "2013-2015", originalHP: 90, originalTorque: 135, stage1HP: 107, stage1Torque: 175, fuel: "Gasolina" },
+          { name: "1.0 SCE 73hp", year: "2013-2015", originalHP: 73, originalTorque: 97, stage1HP: 85, stage1Torque: 110, fuel: "Gasolina" },
+          { name: "1.0 TCE 100hp", year: "2013-2015", originalHP: 100, originalTorque: 160, stage1HP: 125, stage1Torque: 200, fuel: "Gasolina" },
+          { name: "1.5 DCI 75hp", year: "2013-2015", originalHP: 75, originalTorque: 200, stage1HP: 115, stage1Torque: 260, fuel: "Diesel" },
+          { name: "1.5 DCI 90hp", year: "2013-2015", originalHP: 90, originalTorque: 200, stage1HP: 110, stage1Torque: 250, fuel: "Diesel" },
+        ],
+      },
+      {
+        name: "Sandero ( 2021 → )",
+        engines: [
+          { name: "1.0 SCE 67hp", year: "2021 →", originalHP: 67, originalTorque: 95, stage1HP: 107, stage1Torque: 73, fuel: "Gasolina" },
+          { name: "TCE 100 ECO-G 100hp", year: "2021 →", originalHP: 100, originalTorque: 170, stage1HP: 115, stage1Torque: 200, fuel: "Gasolina" },
+          { name: "TCE 90 90hp", year: "2021 →", originalHP: 90, originalTorque: 160, stage1HP: 110, stage1Torque: 210, fuel: "Gasolina" },
+        ],
+      },
+    ],
+  },
+      
 ];
