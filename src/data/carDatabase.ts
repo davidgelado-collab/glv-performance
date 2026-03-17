@@ -102,7 +102,7 @@ export const carDatabase: CarBrand[] = [
           { name: "1.0 SCE 73hp", year: "2013-2015", originalHP: 73, originalTorque: 97, stage1HP: 85, stage1Torque: 110, fuel: "Gasolina" },
           { name: "1.0 TCE 100hp", year: "2013-2015", originalHP: 100, originalTorque: 160, stage1HP: 125, stage1Torque: 200, fuel: "Gasolina" },
           { name: "1.5 DCI 75hp", year: "2013-2015", originalHP: 75, originalTorque: 200, stage1HP: 115, stage1Torque: 260, fuel: "Diesel" },
-          { name: "1.5 DCI 90hp", year: "2013-2015", originalHP: 90, originalTorque: 200, stage1HP: 110, stage1Torque: 250, fuel: "Diesel" },
+          { name: "1.5 DCI 90hp", year: "2013-2015", originalHP: 90, originalTorque: 200, stage1HP: 115, stage1Torque: 260, fuel: "Diesel" },
         ],
       },
       {
