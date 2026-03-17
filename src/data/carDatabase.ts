@@ -46,7 +46,6 @@ export const carDatabase: CarBrand[] = [
           { name: "1.4 TFSI (COD) 150hp", year: "2015-2017", originalHP: 150, originalTorque: 200, stage1HP: 170, stage1Torque: 300, fuel: "Gasolina" },
           { name: "1.8 TFSI 192hp", year: "2015-2017", originalHP: 192, originalTorque: 250, stage1HP: 220, stage1Torque: 380, fuel: "Gasolina" },
           { name: "S1 2.0 TFSI 231hp", year: "2015-2017", originalHP: 231, originalTorque: 370, stage1HP: 300, stage1Torque: 440, fuel: "Gasolina" },
-
           { name: "1.6 TDI CR 90hp", year: "2010-2014", originalHP: 90, originalTorque: 230, stage1HP: 140, stage1Torque: 320, fuel: "Diésel" },
           { name: "1.6 TDI CR 105hp", year: "2010-2014", originalHP: 105, originalTorque: 250, stage1HP: 140, stage1Torque: 320, fuel: "Diésel" },
           { name: "2.0 TDI CR 136hp", year: "2010-2014", originalHP: 136, originalTorque: 320, stage1HP: 185, stage1Torque: 400, fuel: "Diésel" },
@@ -61,7 +60,7 @@ export const carDatabase: CarBrand[] = [
           { name: "25 TFSI (1.0T) 95hp", year: "2018+", originalHP: 95, originalTorque: 175, stage1HP: 130, stage1Torque: 240, fuel: "Gasolina" },
           { name: "30 TFSI (1.0T) 116hp", year: "2018+", originalHP: 116, originalTorque: 200, stage1HP: 140, stage1Torque: 240, fuel: "Gasolina" },
           { name: "35 TFSI (1.5T) 150hp", year: "2018+", originalHP: 150, originalTorque: 250, stage1HP: 185, stage1Torque: 310, fuel: "Gasolina" },
-          { name: "40 TFSI (2.0T) 140hp", year: "2018+", originalHP: 200, originalTorque: 320, stage1HP: 245, stage1Torque: 430, fuel: "Gasolina" },
+          { name: "40 TFSI (2.0T) 200hp", year: "2018+", originalHP: 200, originalTorque: 320, stage1HP: 245, stage1Torque: 430, fuel: "Gasolina" },
         ],
       },
       {name: "A3 (8V)",
