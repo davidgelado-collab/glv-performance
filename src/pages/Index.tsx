@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
@@ -8,14 +9,16 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
 const Index = () => {
+  const [vehiclePreset, setVehiclePreset] = useState("");
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <HeroSection />
       <ServicesSection />
-      <TuningSearch />
+      <TuningSearch onRequestQuote={setVehiclePreset} />
       <BuildsSection />
-      <ContactSection />
+      <ContactSection vehiclePreset={vehiclePreset} />
       <Footer />
       <WhatsAppButton />
     </div>

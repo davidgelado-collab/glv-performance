@@ -3,7 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, ChevronDown, Zap, Gauge } from "lucide-react";
 import { carDatabase, type CarEngine } from "@/data/carDatabase";
 
-const TuningSearch = () => {
+interface TuningSearchProps {
+  onRequestQuote?: (vehicle: string) => void;
+}
+
+const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [engine, setEngine] = useState("");
@@ -146,6 +150,7 @@ const TuningSearch = () => {
                 </p>
                 <a
                   href="#contacto"
+                  onClick={() => onRequestQuote?.(`${brand} ${model} - ${engine}`)}
                   className="inline-block rounded-sm bg-primary px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all duration-150 hover:bg-primary/80"
                 >
                   Solicitar Presupuesto

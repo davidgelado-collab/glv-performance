@@ -5,7 +5,7 @@ export interface CarEngine {
   originalTorque: number;
   stage1HP: number;
   stage1Torque: number;
-  fuel: "Gasolina" | "Diésel";
+  fuel: "Gasolina" | "Diésel" | "Diesel";
 }
 
 export interface CarModel {
