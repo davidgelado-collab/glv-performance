@@ -46,14 +46,14 @@ const HeroSection = () => {
               upgrades turbo y preparaciones de alto rendimiento.
             </p>
 
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-3">
               <a href="#servicios">
-                <Button variant="hero" size="lg">
+                <Button variant="hero" size="lg" className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3">
                   Nuestros Servicios
                 </Button>
               </a>
               <a href="#trabajos">
-                <Button variant="heroOutline" size="lg">
+                <Button variant="heroOutline" size="lg" className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3">
                   Ver Trabajos
                 </Button>
               </a>
