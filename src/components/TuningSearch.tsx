@@ -3,7 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, ChevronDown, Zap, Gauge } from "lucide-react";
 import { carDatabase, type CarEngine } from "@/data/carDatabase";
 
-const TuningSearch = () => {
+interface TuningSearchProps {
+  onRequestQuote?: (vehicle: string) => void;
+}
+
+const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [engine, setEngine] = useState("");
