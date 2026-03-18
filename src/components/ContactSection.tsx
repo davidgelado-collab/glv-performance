@@ -1,8 +1,21 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin } from "lucide-react";
 
-const ContactSection = () => {
+interface ContactSectionProps {
+  vehiclePreset?: string;
+}
+
+const ContactSection = ({ vehiclePreset = "" }: ContactSectionProps) => {
+  const [vehicle, setVehicle] = useState("");
+
+  useEffect(() => {
+    if (vehiclePreset) {
+      setVehicle(vehiclePreset);
+    }
+  }, [vehiclePreset]);
+
   return (
     <section id="contacto" className="border-t border-border bg-background py-24">
       <div className="container mx-auto px-6">
@@ -63,6 +76,8 @@ const ContactSection = () => {
             <input
               type="text"
               placeholder="Vehículo (ej: BMW 335i N54)"
+              value={vehicle}
+              onChange={(e) => setVehicle(e.target.value)}
               className="w-full rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
             />
             <textarea
