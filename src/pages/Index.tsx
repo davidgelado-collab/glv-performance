@@ -4,6 +4,7 @@ import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
 import TuningSearch from "@/components/TuningSearch";
 import BuildsSection from "@/components/BuildsSection";
+import ReviewsSection from "@/components/ReviewsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -18,6 +19,7 @@ const Index = () => {
       <ServicesSection />
       <TuningSearch onRequestQuote={setVehiclePreset} />
       <BuildsSection />
+      <ReviewsSection />
       <ContactSection vehiclePreset={vehiclePreset} />
       <Footer />
       <WhatsAppButton />
