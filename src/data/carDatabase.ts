@@ -75,7 +75,7 @@ export const carDatabase: CarBrand[] = [
     name: "Dacia",
     models: [
       {
-        name: "Sandero ( 2008-2012 )",
+        name: "Sandero (2008-2012)",
         engines: [
           { name: "1.2I 16V 75hp", year: "2008-2012", originalHP: 75, originalTorque: 107, stage1HP: 85, stage1Torque: 125, fuel: "Gasolina" },
           { name: "1.4I 75hp", year: "2008-2012", originalHP: 75, originalTorque: 112, stage1HP: 82, stage1Torque: 122, fuel: "Gasolina" },
@@ -88,7 +88,7 @@ export const carDatabase: CarBrand[] = [
         ],
       },
       {
-        name: "Sandero ( 2013-2015 )",
+        name: "Sandero (2013-2015)",
         engines: [
           { name: "0.9 DCI 90hp", year: "2013-2015", originalHP: 90, originalTorque: 135, stage1HP: 107, stage1Torque: 175, fuel: "Gasolina" },
           { name: "1.5 DCI 75hp", year: "2013-2015", originalHP: 75, originalTorque: 200, stage1HP: 115, stage1Torque: 260, fuel: "Diesel" },
@@ -96,7 +96,7 @@ export const carDatabase: CarBrand[] = [
         ],
       },
       {
-        name: "Sandero ( 2016-2020 )",
+        name: "Sandero (2016-2020)",
         engines: [
           { name: "0.9 TCE 90hp", year: "2013-2015", originalHP: 90, originalTorque: 135, stage1HP: 107, stage1Torque: 175, fuel: "Gasolina" },
           { name: "1.0 SCE 73hp", year: "2013-2015", originalHP: 73, originalTorque: 97, stage1HP: 85, stage1Torque: 110, fuel: "Gasolina" },
@@ -106,7 +106,7 @@ export const carDatabase: CarBrand[] = [
         ],
       },
       {
-        name: "Sandero ( 2021 → )",
+        name: "Sandero (2021 →)",
         engines: [
           { name: "1.0 SCE 67hp", year: "2021 →", originalHP: 67, originalTorque: 95, stage1HP: 73, stage1Torque: 105, fuel: "Gasolina" },
           { name: "TCE 100 ECO-G 100hp", year: "2021 →", originalHP: 100, originalTorque: 170, stage1HP: 115, stage1Torque: 200, fuel: "Gasolina" },
@@ -115,5 +115,23 @@ export const carDatabase: CarBrand[] = [
       },
     ],
   },
-      
+  // ─── VOLKSWAGEN ───────────────────────────────────────────────
+  {
+    name: "Volkswagen",
+    models: [
+      {
+        name: "Golf 7 (2012-2016)",
+        engines: [
+          { name: "1.2 TSI 110hp", year: "2012-2016", originalHP: 110, originalTorque: 175, stage1HP: 140, stage1Torque: 235, fuel: "Gasolina" },
+        ],
+      },
+      {
+      name: "PASSAT / MAGOTAN (B8 2014-2019)",
+        engines: [
+          { name: "2.0 TDI CR 150hp", year: "2014-2019", originalHP: 150, originalTorque: 340, stage1HP: 190, stage1Torque: 420, fuel: "Diésel" },
+          { name: "2.0 TDI CR 190hp", year: "2014-2019", originalHP: 190, originalTorque: 400, stage1HP: 225, stage1Torque: 460, fuel: "Diésel" },
+        ],
+      },           
+    ],
+  },    
 ];
