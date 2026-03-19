@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Star, Send, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { submitReview } from "@/lib/api";
 import logoImg from "@/assets/logo-glv.png";
 
 const Feedback = () => {
@@ -25,21 +25,19 @@ const Feedback = () => {
     setLoading(true);
     setError("");
 
-    const { error: dbError } = await supabase.from("reviews").insert({
-      name: name.trim(),
-      vehicle: vehicle.trim() || null,
-      rating,
-      message: message.trim(),
-    });
-
-    setLoading(false);
-
-    if (dbError) {
+    try {
+      await submitReview({
+        name: name.trim(),
+        vehicle: vehicle.trim(),
+        rating,
+        message: message.trim(),
+      });
+      setSubmitted(true);
+    } catch {
       setError("Error al enviar la reseña. Inténtalo de nuevo.");
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    setSubmitted(true);
   };
 
   if (submitted) {

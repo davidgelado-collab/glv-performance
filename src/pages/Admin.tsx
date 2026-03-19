@@ -1,24 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Star, Check, X, Trash2, LogOut } from "lucide-react";
-import type { Session } from "@supabase/supabase-js";
-
-interface Review {
-  id: string;
-  name: string;
-  vehicle: string | null;
-  rating: number;
-  message: string;
-  approved: boolean;
-  created_at: string;
-}
+import {
+  adminLogin,
+  adminLogout,
+  isAdminLoggedIn,
+  getAllReviews,
+  toggleApproval,
+  deleteReview as apiDeleteReview,
+  type Review,
+} from "@/lib/api";
 
 const Admin = () => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(isAdminLoggedIn());
   const [reviews, setReviews] = useState<Review[]>([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,78 +21,52 @@ const Admin = () => {
   const [loginLoading, setLoginLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        if (session) {
-          // Check admin role
-          const { data } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", session.user.id)
-            .eq("role", "admin")
-            .maybeSingle();
-          setIsAdmin(!!data);
-        } else {
-          setIsAdmin(false);
-        }
-        setLoading(false);
-      }
-    );
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+  const fetchReviews = useCallback(async () => {
+    try {
+      const data = await getAllReviews();
+      setReviews(data);
+    } catch {
+      // token may be invalid
+      adminLogout();
+      setLoggedIn(false);
+    }
   }, []);
 
   useEffect(() => {
-    if (isAdmin) fetchReviews();
-  }, [isAdmin]);
-
-  const fetchReviews = async () => {
-    const { data } = await supabase
-      .from("reviews")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (data) setReviews(data as Review[]);
-  };
+    if (loggedIn) fetchReviews();
+  }, [loggedIn, fetchReviews]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginLoading(true);
     setLoginError("");
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setLoginError("Credenciales incorrectas");
-    setLoginLoading(false);
+    try {
+      await adminLogin(email, password);
+      setLoggedIn(true);
+    } catch {
+      setLoginError("Credenciales incorrectas");
+    } finally {
+      setLoginLoading(false);
+    }
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    adminLogout();
+    setLoggedIn(false);
     navigate("/");
   };
 
-  const toggleApproval = async (id: string, approved: boolean) => {
-    await supabase.from("reviews").update({ approved: !approved }).eq("id", id);
+  const handleToggle = async (id: string, approved: boolean | number) => {
+    await toggleApproval(id, !approved);
     fetchReviews();
   };
 
-  const deleteReview = async (id: string) => {
-    await supabase.from("reviews").delete().eq("id", id);
+  const handleDelete = async (id: string) => {
+    await apiDeleteReview(id);
     fetchReviews();
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <p className="font-body text-muted-foreground">Cargando...</p>
-      </div>
-    );
-  }
-
-  if (!session || !isAdmin) {
+  if (!loggedIn) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background px-6">
         <div className="w-full max-w-sm">
@@ -122,9 +91,6 @@ const Admin = () => {
             {loginError && (
               <p className="font-body text-sm text-destructive">{loginError}</p>
             )}
-            {session && !isAdmin && (
-              <p className="font-body text-sm text-destructive">No tienes permisos de administrador.</p>
-            )}
             <Button variant="hero" size="lg" className="w-full" disabled={loginLoading}>
               {loginLoading ? "Entrando..." : "Iniciar Sesión"}
             </Button>
@@ -135,7 +101,7 @@ const Admin = () => {
   }
 
   const pending = reviews.filter((r) => !r.approved);
-  const approved = reviews.filter((r) => r.approved);
+  const approved = reviews.filter((r) => !!r.approved);
 
   return (
     <div className="min-h-screen bg-background">
@@ -151,7 +117,6 @@ const Admin = () => {
       </header>
 
       <div className="container mx-auto px-6 py-8">
-        {/* Pending */}
         <h2 className="mb-4 font-display text-lg font-bold uppercase text-foreground">
           Pendientes ({pending.length})
         </h2>
@@ -163,14 +128,13 @@ const Admin = () => {
               <ReviewCard
                 key={review.id}
                 review={review}
-                onToggle={() => toggleApproval(review.id, review.approved)}
-                onDelete={() => deleteReview(review.id)}
+                onToggle={() => handleToggle(review.id, review.approved)}
+                onDelete={() => handleDelete(review.id)}
               />
             ))}
           </div>
         )}
 
-        {/* Approved */}
         <h2 className="mb-4 font-display text-lg font-bold uppercase text-foreground">
           Aprobadas ({approved.length})
         </h2>
@@ -182,8 +146,8 @@ const Admin = () => {
               <ReviewCard
                 key={review.id}
                 review={review}
-                onToggle={() => toggleApproval(review.id, review.approved)}
-                onDelete={() => deleteReview(review.id)}
+                onToggle={() => handleToggle(review.id, review.approved)}
+                onDelete={() => handleDelete(review.id)}
               />
             ))}
           </div>
@@ -202,8 +166,9 @@ function ReviewCard({
   onToggle: () => void;
   onDelete: () => void;
 }) {
+  const isApproved = !!review.approved;
   return (
-    <div className={`rounded-sm border p-5 ${review.approved ? "border-green-500/30 bg-green-500/5" : "border-border bg-card"}`}>
+    <div className={`rounded-sm border p-5 ${isApproved ? "border-green-500/30 bg-green-500/5" : "border-border bg-card"}`}>
       <div className="mb-2 flex gap-0.5">
         {[1, 2, 3, 4, 5].map((s) => (
           <Star
@@ -223,12 +188,12 @@ function ReviewCard({
 
       <div className="mt-4 flex gap-2">
         <Button
-          variant={review.approved ? "outline" : "default"}
+          variant={isApproved ? "outline" : "default"}
           size="sm"
           onClick={onToggle}
           className="text-xs"
         >
-          {review.approved ? (
+          {isApproved ? (
             <><X className="mr-1 h-3 w-3" /> Desaprobar</>
           ) : (
             <><Check className="mr-1 h-3 w-3" /> Aprobar</>
