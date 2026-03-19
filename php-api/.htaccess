@@ -1,0 +1,11 @@
+# Proteger config.php de acceso directo
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Proteger setup.sql
+<Files "setup.sql">
+    Order Allow,Deny
+    Deny from all
+</Files>
