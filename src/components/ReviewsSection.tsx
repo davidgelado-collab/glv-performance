@@ -1,21 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { getApprovedReviews, type Review } from "@/lib/api";
 
 const ReviewsSection = () => {
   const { data: reviews, isLoading } = useQuery({
     queryKey: ["approved-reviews"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("reviews")
-        .select("*")
-        .eq("approved", true)
-        .order("created_at", { ascending: false })
-        .limit(6);
-      if (error) throw error;
-      return data;
-    },
+    queryFn: getApprovedReviews,
   });
 
   if (isLoading || !reviews || reviews.length === 0) return null;
@@ -39,7 +30,7 @@ const ReviewsSection = () => {
         </motion.div>
 
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {reviews.map((review, index) => (
+          {reviews.map((review: Review, index: number) => (
             <motion.div
               key={review.id}
               initial={{ opacity: 0, y: 20 }}
