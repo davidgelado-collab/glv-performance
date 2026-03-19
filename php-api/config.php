@@ -27,7 +27,7 @@ define('ADMIN_USER', 'admin@glvperformance.com');
 define('ADMIN_PASS', '@07O5pmux');
 
 // Token secreto para autenticar admin (genera uno aleatorio)
-define('JWT_SECRET', 'cambia-esto-por-un-token-secreto-largo-y-aleatorio');
+define('JWT_SECRET', 'k9$mP2!vR*wQz7&N_uX8@bL5#jY1^tG4_fS9*pA6%dV3#hK8!mN0_qW4');
 
 function getDB(): PDO {
     try {
