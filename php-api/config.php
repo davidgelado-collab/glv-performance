@@ -17,14 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // ⚠️ CAMBIA ESTOS VALORES por los de tu servidor
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'glv_performance');
-define('DB_USER', 'tu_usuario');
-define('DB_PASS', 'tu_contraseña');
+define('DB_HOST', 'qaqb246.glvperformance.com');
+define('DB_NAME', 'qaqb246');
+define('DB_USER', 'qaqb246');
+define('DB_PASS', '@@07O5pmuxxx');
 
 // Contraseña del panel admin (cámbiala)
 define('ADMIN_USER', 'admin@glvperformance.com');
-define('ADMIN_PASS', 'CambiaEstaContraseña123!');
+define('ADMIN_PASS', '@07O5pmux');
 
 // Token secreto para autenticar admin (genera uno aleatorio)
 define('JWT_SECRET', 'cambia-esto-por-un-token-secreto-largo-y-aleatorio');
