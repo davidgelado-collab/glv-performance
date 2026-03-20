@@ -13,34 +13,36 @@ const Index = () => {
   const [vehiclePreset, setVehiclePreset] = useState("");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background">
       <Navbar />
-      <HeroSection />
       
-      {/* SECCIÓN SERVICIOS */}
-      <div id="servicios">
-        <ServicesSection />
-      </div>
+      {/* Envolvemos el contenido en un main para mejor estructura */}
+      <main className="flex flex-col">
+        <HeroSection />
+        
+        {/* Usamos scroll-mt-24 para que al hacer scroll desde el móvil, 
+          la sección no quede tapada por el Navbar fijo.
+        */}
+        <div id="servicios" className="scroll-mt-24">
+          <ServicesSection />
+        </div>
 
-      {/* SECCIÓN BUSCADOR */}
-      <div id="buscador">
-        <TuningSearch onRequestQuote={setVehiclePreset} />
-      </div>
+        <div id="buscador" className="scroll-mt-24">
+          <TuningSearch onRequestQuote={setVehiclePreset} />
+        </div>
 
-      {/* SECCIÓN TRABAJOS (Builds) */}
-      <div id="trabajos">
-        <BuildsSection />
-      </div>
+        <div id="trabajos" className="scroll-mt-24">
+          <BuildsSection />
+        </div>
 
-      {/* SECCIÓN RESEÑAS */}
-      <div id="reseñas">
-        <ReviewsSection />
-      </div>
+        <div id="reseñas" className="scroll-mt-24">
+          <ReviewsSection />
+        </div>
 
-      {/* SECCIÓN CONTACTO */}
-      <div id="contacto">
-        <ContactSection vehiclePreset={vehiclePreset} />
-      </div>
+        <div id="contacto" className="scroll-mt-24">
+          <ContactSection vehiclePreset={vehiclePreset} />
+        </div>
+      </main>
 
       <Footer />
       <WhatsAppButton />
