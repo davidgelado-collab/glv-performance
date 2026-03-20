@@ -8,8 +8,8 @@ interface Review {
   message: string;
   rating: string | number;
   vehicle?: string;
-  service_type?: string;
-  approved: number | string; // Cambiado a número por el TinyInt(1)
+  service_type?: string; // Coincide con tu VARCHAR(100)
+  approved: number | string;
 }
 
 const API_BASE = "https://glvperformance.com/api";
@@ -23,17 +23,14 @@ const ReviewsSection = () => {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          // FILTRO CORREGIDO: 
-          // Comprobamos si 'approved' es 1 (número) o "1" (texto)
-          const approvedReviews = data.filter((r) => 
-            r.approved == 1 || r.approved === "1"
-          );
+          // Filtramos por el TinyInt(1) que comentamos antes
+          const approvedReviews = data.filter((r) => r.approved == 1 || r.approved === "1");
           setReviews(approvedReviews);
         }
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error cargando reseñas:", err);
+        console.error("Error:", err);
         setLoading(false);
       });
   }, []);
@@ -60,10 +57,6 @@ const ReviewsSection = () => {
             reviews.map((review, index) => (
               <motion.div
                 key={review.id || index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
                 className="flex flex-col rounded-sm border border-border bg-card p-6"
               >
                 <Quote className="mb-4 h-6 w-6 text-primary/30" />
@@ -88,15 +81,18 @@ const ReviewsSection = () => {
                   <p className="font-display text-sm font-bold text-foreground">
                     {review.name}
                   </p>
-                  <div className="mt-1">
+                  <div className="mt-1 flex flex-col gap-1">
+                    {/* LÍNEA DE VEHÍCULO */}
                     {review.vehicle && (
                       <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
                         {review.vehicle}
                       </p>
                     )}
+                    
+                    {/* LÍNEA DE SERVICIO (Nueva de MySQL) */}
                     {review.service_type && (
-                      <p className="text-[11px] font-medium text-primary/80">
-                        🛠 {review.service_type}
+                      <p className="inline-flex items-center font-body text-[11px] font-semibold text-primary/90">
+                        <span className="mr-1">🛠</span> {review.service_type}
                       </p>
                     )}
                   </div>
@@ -105,7 +101,7 @@ const ReviewsSection = () => {
             ))
           ) : (
             <div className="col-span-full text-center py-10 text-muted-foreground">
-              {loading ? "Cargando reseñas..." : "No hay reseñas aprobadas todavía."}
+              {loading ? "Cargando reseñas..." : "No hay reseñas aprobadas."}
             </div>
           )}
         </div>
