@@ -5,7 +5,6 @@ $method = $_SERVER['REQUEST_METHOD'];
 $db = getDB();
 
 // GET /api/reviews.php — listar reseñas aprobadas (público)
-// GET /api/reviews.php?all=1 — listar todas (admin)
 if ($method === 'GET') {
     $all = isset($_GET['all']) && $_GET['all'] === '1';
 
@@ -13,7 +12,8 @@ if ($method === 'GET') {
         requireAuth();
         $stmt = $db->query('SELECT * FROM reviews ORDER BY created_at DESC');
     } else {
-        $stmt = $db->query('SELECT * FROM reviews WHERE approved = 1 ORDER BY created_at DESC LIMIT 6');
+        // Hemos quitado el LIMIT 6 para que se vean todas las aprobadas, o puedes dejarlo si prefieres
+        $stmt = $db->query('SELECT * FROM reviews WHERE approved = 1 ORDER BY created_at DESC');
     }
 
     jsonResponse($stmt->fetchAll());
@@ -25,6 +25,7 @@ if ($method === 'POST') {
 
     $name = trim($input['name'] ?? '');
     $vehicle = trim($input['vehicle'] ?? '');
+    $service_type = trim($input['service_type'] ?? ''); // <-- 1. RECOGER CAMPO
     $rating = (int)($input['rating'] ?? 0);
     $message = trim($input['message'] ?? '');
 
@@ -35,6 +36,9 @@ if ($method === 'POST') {
     if (strlen($vehicle) > 100) {
         jsonResponse(['error' => 'Vehículo demasiado largo'], 400);
     }
+    if ($service_type === '' || strlen($service_type) > 100) { // <-- 2. VALIDAR CAMPO
+        jsonResponse(['error' => 'Tipo de servicio inválido o muy largo'], 400);
+    }
     if ($rating < 1 || $rating > 5) {
         jsonResponse(['error' => 'Valoración inválida'], 400);
     }
@@ -42,12 +46,15 @@ if ($method === 'POST') {
         jsonResponse(['error' => 'Mensaje inválido'], 400);
     }
 
+    // 3. INSERTAR EN SQL (Añadida la columna service_type)
     $stmt = $db->prepare(
-        'INSERT INTO reviews (name, vehicle, rating, message) VALUES (:name, :vehicle, :rating, :message)'
+        'INSERT INTO reviews (name, vehicle, service_type, rating, message, approved) 
+         VALUES (:name, :vehicle, :service_type, :rating, :message, 0)'
     );
     $stmt->execute([
         ':name' => $name,
         ':vehicle' => $vehicle ?: null,
+        ':service_type' => $service_type,
         ':rating' => $rating,
         ':message' => $message,
     ]);
@@ -55,6 +62,7 @@ if ($method === 'POST') {
     jsonResponse(['success' => true], 201);
 }
 
+// ... (El resto del archivo PUT y DELETE se queda exactamente igual)
 // PUT /api/reviews.php?id=xxx — toggle aprobación (admin)
 if ($method === 'PUT') {
     requireAuth();
