@@ -8,6 +8,7 @@ import logoImg from "@/assets/logo-glv.png";
 const Feedback = () => {
   const [name, setName] = useState("");
   const [vehicle, setVehicle] = useState("");
+  const [serviceType, setServiceType] = useState(""); // 1. NUEVO ESTADO
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [message, setMessage] = useState("");
@@ -17,7 +18,8 @@ const Feedback = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !message.trim() || rating === 0) {
+    // 2. VALIDACIÓN ACTUALIZADA (Añadido serviceType)
+    if (!name.trim() || !message.trim() || !serviceType.trim() || rating === 0) {
       setError("Por favor, completa todos los campos obligatorios.");
       return;
     }
@@ -26,9 +28,11 @@ const Feedback = () => {
     setError("");
 
     try {
+      // 3. ENVÍO ACTUALIZADO
       await submitReview({
         name: name.trim(),
         vehicle: vehicle.trim(),
+        service_type: serviceType.trim(), // Enviamos el nuevo campo
         rating,
         message: message.trim(),
       });
@@ -41,6 +45,7 @@ const Feedback = () => {
   };
 
   if (submitted) {
+    // ... (El bloque de 'submitted' se queda igual)
     return (
       <div className="flex min-h-screen items-center justify-center bg-background px-6">
         <motion.div
@@ -56,7 +61,7 @@ const Feedback = () => {
             Tu reseña ha sido enviada correctamente. Será publicada una vez aprobada por nuestro equipo.
           </p>
           <a
-            href="/"
+            href="/#/"
             className="mt-8 inline-block rounded-sm bg-primary px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-colors hover:bg-primary/80"
           >
             Volver al inicio
@@ -75,7 +80,7 @@ const Feedback = () => {
         className="w-full max-w-lg"
       >
         <div className="mb-8 text-center">
-          <a href="/">
+          <a href="/#/">
             <img src={logoImg} alt="GLV Performance" className="mx-auto mb-6 h-16" />
           </a>
           <h1 className="font-display text-3xl font-bold uppercase text-foreground md:text-4xl">
@@ -101,20 +106,38 @@ const Feedback = () => {
             />
           </div>
 
-          <div>
-            <label className="mb-1 block font-body text-xs uppercase tracking-wider text-muted-foreground">
-              Vehículo
-            </label>
-            <input
-              type="text"
-              value={vehicle}
-              onChange={(e) => setVehicle(e.target.value)}
-              placeholder="Ej: BMW 335i N54"
-              maxLength={100}
-              className="w-full rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-            />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block font-body text-xs uppercase tracking-wider text-muted-foreground">
+                Vehículo
+              </label>
+              <input
+                type="text"
+                value={vehicle}
+                onChange={(e) => setVehicle(e.target.value)}
+                placeholder="Ej: BMW 335i N54"
+                maxLength={100}
+                className="w-full rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+              />
+            </div>
+
+            {/* 4. NUEVO INPUT VISUAL */}
+            <div>
+              <label className="mb-1 block font-body text-xs uppercase tracking-wider text-muted-foreground">
+                Tipo de Trabajo *
+              </label>
+              <input
+                type="text"
+                value={serviceType}
+                onChange={(e) => setServiceType(e.target.value)}
+                placeholder="Ej: Stage 1 / Downpipe"
+                maxLength={100}
+                className="w-full rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+              />
+            </div>
           </div>
 
+          {/* ... Resto del formulario (Valoración y Experiencia) igual ... */}
           <div>
             <label className="mb-1 block font-body text-xs uppercase tracking-wider text-muted-foreground">
               Valoración *
