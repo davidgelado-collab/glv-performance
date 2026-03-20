@@ -3,12 +3,11 @@ import { Menu, X } from "lucide-react";
 import logoGlv from "@/assets/logo-glv.png";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Añadimos "reseñas" que faltaba para que sea igual que tu Index.tsx
 const navItems = [
   { label: "Servicios", id: "servicios" },
   { label: "Buscador", id: "buscador" },
   { label: "Trabajos", id: "trabajos" },
-  { label: "Reseñas", id: "reseñas" }, // Agregado
+  { label: "Reseñas", id: "reseñas" },
   { label: "Contacto", id: "contacto" },
 ];
 
@@ -16,21 +15,25 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      // Ajuste para que el Navbar fijo no tape el título de la sección
-      const offset = 90; 
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
-    }
+    // 1. Cerramos el menú inmediatamente
     setOpen(false); 
+
+    // 2. Esperamos a que la animación de cierre termine para que el scroll sea preciso
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
+        const offset = 90; 
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = element.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
+    }, 300); // 300ms es el tiempo ideal para móviles
   };
 
   return (
@@ -77,7 +80,8 @@ const Navbar = () => {
               {navItems.map((item) => (
                 <button
                   key={item.label}
-                  onClick={() => scrollToSection(item.id)}
+                  // Cambiado para que use la nueva lógica con timeout
+                  onClick={() => scrollToSection(item.id)} 
                   className="text-left font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary py-4 border-b border-border/50 last:border-none"
                 >
                   {item.label}
