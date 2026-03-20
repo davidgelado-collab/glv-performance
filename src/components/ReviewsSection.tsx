@@ -3,16 +3,15 @@ import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 
 interface Review {
-  id: string;
+  id: string | number;
   name: string;
   message: string;
-  rating: number;
+  rating: string | number;
   vehicle?: string;
   service_type?: string;
-  status?: string;
+  approved: number | string; // Cambiado a número por el TinyInt(1)
 }
 
-// Asegúrate de que esta carpeta "api" sea donde está realmente el archivo reviews.php
 const API_BASE = "https://glvperformance.com/api";
 
 const ReviewsSection = () => {
@@ -20,22 +19,21 @@ const ReviewsSection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Llamada al archivo correcto: reviews.php
     fetch(`${API_BASE}/reviews.php`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al conectar con el servidor");
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          // FILTRO ESTRICTO: Solo las que tengan status "approved"
-          const approvedReviews = data.filter((r) => r.status === "approved");
+          // FILTRO CORREGIDO: 
+          // Comprobamos si 'approved' es 1 (número) o "1" (texto)
+          const approvedReviews = data.filter((r) => 
+            r.approved == 1 || r.approved === "1"
+          );
           setReviews(approvedReviews);
         }
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error cargando reseñas desde MySQL:", err);
+        console.error("Error cargando reseñas:", err);
         setLoading(false);
       });
   }, []);
@@ -47,7 +45,6 @@ const ReviewsSection = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.3 }}
           className="mb-12 text-center"
         >
           <span className="font-body text-sm uppercase tracking-[0.3em] text-primary">
@@ -62,16 +59,15 @@ const ReviewsSection = () => {
           {reviews.length > 0 ? (
             reviews.map((review, index) => (
               <motion.div
-                key={review.id}
+                key={review.id || index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.3 }}
+                transition={{ delay: index * 0.1 }}
                 className="flex flex-col rounded-sm border border-border bg-card p-6"
               >
                 <Quote className="mb-4 h-6 w-6 text-primary/30" />
-
-                <p className="mb-4 flex-grow font-body text-sm leading-relaxed text-muted-foreground italic">
+                <p className="mb-4 flex-grow font-body text-sm italic text-muted-foreground">
                   "{review.message}"
                 </p>
 
@@ -92,14 +88,14 @@ const ReviewsSection = () => {
                   <p className="font-display text-sm font-bold text-foreground">
                     {review.name}
                   </p>
-                  <div className="mt-1 flex flex-col gap-0.5">
+                  <div className="mt-1">
                     {review.vehicle && (
-                      <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground">
+                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
                         {review.vehicle}
                       </p>
                     )}
                     {review.service_type && (
-                      <p className="font-body text-[11px] font-medium text-primary/80">
+                      <p className="text-[11px] font-medium text-primary/80">
                         🛠 {review.service_type}
                       </p>
                     )}
@@ -109,7 +105,7 @@ const ReviewsSection = () => {
             ))
           ) : (
             <div className="col-span-full text-center py-10 text-muted-foreground">
-              {loading ? "Cargando reseñas..." : "No hay reseñas aprobadas para mostrar."}
+              {loading ? "Cargando reseñas..." : "No hay reseñas aprobadas todavía."}
             </div>
           )}
         </div>
