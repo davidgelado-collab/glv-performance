@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface Review {
   id: string;
@@ -15,15 +14,19 @@ const ReviewsSection = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
-    supabase
-      .from("reviews")
-      .select("id, name, vehicle, rating, message")
-      .eq("approved", true)
-      .order("created_at", { ascending: false })
-      .limit(6)
-      .then(({ data }) => {
-        if (data) setReviews(data);
-      });
+    // LLAMADA DIRECTA A TU API EN ARSYS
+    fetch("https://glvperformance.com/api/reviews.php")
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          // Filtramos solo las aprobadas (1) y limitamos a 6
+          const approved = data
+            .filter((r: any) => r.approved == 1 || r.approved === "1")
+            .slice(0, 6);
+          setReviews(approved);
+        }
+      })
+      .catch((error) => console.error("Error cargando reseñas de Arsys:", error));
   }, []);
 
   if (reviews.length === 0) return null;
