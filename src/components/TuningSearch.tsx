@@ -193,7 +193,7 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
                 </p>
                 <a
                   href="#contacto"
-                  onClick={() => onRequestQuote?.(`${brand} ${model} - ${engine}`)}
+                  onClick={() => onRequestQuote?.(`${brand} ${model}${generation ? ` (${generation})` : ""} - ${engine}`)}
                   className="inline-block rounded-sm bg-primary px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all duration-150 hover:bg-primary/80"
                 >
                   Solicitar Presupuesto
