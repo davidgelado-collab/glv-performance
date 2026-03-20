@@ -1,15 +1,32 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
-import { getApprovedReviews, type Review } from "@/lib/api";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Review {
+  id: string;
+  name: string;
+  vehicle: string | null;
+  rating: number;
+  message: string;
+}
 
 const ReviewsSection = () => {
-  const { data: reviews, isLoading } = useQuery({
-    queryKey: ["approved-reviews"],
-    queryFn: getApprovedReviews,
-  });
+  const [reviews, setReviews] = useState<Review[]>([]);
 
-  if (isLoading || !reviews || reviews.length === 0) return null;
+  useEffect(() => {
+    supabase
+      .from("reviews")
+      .select("id, name, vehicle, rating, message")
+      .eq("approved", true)
+      .order("created_at", { ascending: false })
+      .limit(6)
+      .then(({ data }) => {
+        if (data) setReviews(data);
+      });
+  }, []);
+
+  if (reviews.length === 0) return null;
 
   return (
     <section id="reseñas" className="border-t border-border bg-background py-24">
@@ -30,7 +47,7 @@ const ReviewsSection = () => {
         </motion.div>
 
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {reviews.map((review: Review, index: number) => (
+          {reviews.map((review, index) => (
             <motion.div
               key={review.id}
               initial={{ opacity: 0, y: 20 }}
@@ -45,7 +62,7 @@ const ReviewsSection = () => {
                 "{review.message}"
               </p>
 
-              <div className="flex gap-0.5 mb-3">
+              <div className="mb-3 flex gap-0.5">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
