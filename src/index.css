@@ -51,6 +51,12 @@
 }
 
 @layer base {
+  /* Configuración global de Scroll y comportamiento móvil */
+  html {
+    scroll-behavior: smooth !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   * {
     @apply border-border;
   }
@@ -58,9 +64,18 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    width: 100%;
+    overflow-x: hidden; /* Evita que la web baile hacia los lados en móvil */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
+  }
+
+  /* Mejora la respuesta de los botones en pantallas táctiles */
+  button {
+    touch-action: manipulation;
   }
 }
