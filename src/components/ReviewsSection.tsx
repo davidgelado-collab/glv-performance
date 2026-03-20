@@ -1,4 +1,47 @@
-<h2 className="mt-3 font-display text-4xl font-bold uppercase md:text-5xl">
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Star, Quote } from "lucide-react";
+
+interface Review {
+  id: string;
+  name: string;
+  message: string;
+  rating: number;
+  vehicle?: string;
+  service_type?: string;
+}
+
+const API_BASE = "https://glvperformance.com/api";
+
+const ReviewsSection = () => {
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/get_reviews.php`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          // Filtramos solo las aprobadas
+          setReviews(data.filter((r) => r.status === "approved"));
+        }
+      })
+      .catch((err) => console.error("Error cargando reseñas:", err));
+  }, []);
+
+  return (
+    <section id="reseñas" className="bg-background py-24">
+      <div className="container mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mb-12 text-center"
+        >
+          <span className="font-body text-sm uppercase tracking-[0.3em] text-primary">
+            Testimonios
+          </span>
+          <h2 className="mt-3 font-display text-4xl font-bold uppercase md:text-5xl">
             Lo que dicen nuestros <span className="text-primary">clientes</span>
           </h2>
         </motion.div>
