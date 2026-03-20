@@ -1,49 +1,4 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Star, Quote, MessageSquareText } from "lucide-react"; // Se cambió MessageSquareEdit por MessageSquareText
-import { Button } from "@/components/ui/button";
-
-interface Review {
-  id: string;
-  name: string;
-  vehicle: string | null;
-  service_type: string | null;
-  rating: number;
-  message: string;
-  approved?: string | number;
-}
-
-const ReviewsSection = () => {
-  const [reviews, setReviews] = useState<Review[]>([]);
-
-  useEffect(() => {
-    fetch("https://glvperformance.com/api/reviews.php")
-      .then((response) => response.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          const approved = data.filter((r: any) => r.approved == 1 || r.approved === "1");
-          setReviews(approved);
-        }
-      })
-      .catch((error) => console.error("Error cargando reseñas de Arsys:", error));
-  }, []);
-
-  if (reviews.length === 0) return null;
-
-  return (
-    <section id="reseñas" className="border-t border-border bg-background py-24">
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.3 }}
-          className="mb-12 text-center"
-        >
-          <span className="font-body text-sm uppercase tracking-[0.3em] text-primary">
-            Testimonios
-          </span>
-          <h2 className="mt-3 font-display text-4xl font-bold uppercase md:text-5xl">
+<h2 className="mt-3 font-display text-4xl font-bold uppercase md:text-5xl">
             Lo que dicen nuestros <span className="text-primary">clientes</span>
           </h2>
         </motion.div>
@@ -97,23 +52,6 @@ const ReviewsSection = () => {
             </motion.div>
           ))}
         </div>
-
-        {/* BOTÓN PARA DEJAR RESEÑA */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="mt-16 text-center"
-        >
-          <Button 
-            variant="outline" 
-            onClick={() => window.location.href = "/#/feedback"}
-            className="group border-primary/20 hover:border-primary"
-          >
-            {/* Se cambió MessageSquareEdit por MessageSquareText aquí también */}
-            <MessageSquareText className="mr-2 h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
-            ¿Has trabajado con nosotros? Déjanos tu reseña
-          </Button>
-        </motion.div>
       </div>
     </section>
   );
