@@ -126,12 +126,18 @@ export const carDatabase: CarBrand[] = [
         ],
       },
       {
+      name: "PASSAT / MAGOTAN (B6 2005-2010)",
+        engines: [
+          { name: "2.0 TDI 170hp", year: "2005-2010", originalHP: 170, originalTorque: 350, stage1HP: 200, stage1Torque: 420, fuel: "Diésel" },
+        ],
+      },
+      {
       name: "PASSAT / MAGOTAN (B8 2014-2019)",
         engines: [
           { name: "2.0 TDI CR 150hp", year: "2014-2019", originalHP: 150, originalTorque: 340, stage1HP: 190, stage1Torque: 420, fuel: "Diésel" },
           { name: "2.0 TDI CR 190hp", year: "2014-2019", originalHP: 190, originalTorque: 400, stage1HP: 225, stage1Torque: 460, fuel: "Diésel" },
         ],
-      },           
+      },
     ],
   },    
 ];
