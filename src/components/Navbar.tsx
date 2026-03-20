@@ -4,32 +4,41 @@ import logoGlv from "@/assets/logo-glv.png";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
-  { label: "Servicios", href: "#servicios" },
-  { label: "Buscador", href: "#buscador" },
-  { label: "Trabajos", href: "#trabajos" },
-  { label: "Contacto", href: "#contacto" },
+  { label: "Servicios", id: "servicios" },
+  { label: "Buscador", id: "buscador" },
+  { label: "Trabajos", id: "trabajos" },
+  { label: "Contacto", id: "contacto" },
 ];
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
 
+  // FUNCIÓN MÁGICA PARA EVITAR EL 404
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+    setOpen(false); // Cierra el menú móvil si está abierto
+  };
+
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-border/30 bg-background/70 backdrop-blur-lg">
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
-        <a href="#" className="flex items-center">
+        <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="flex items-center">
           <img src={logoGlv} alt="GLV Performance" className="h-[5.625rem] w-auto" />
-        </a>
+        </button>
 
         {/* Desktop */}
         <div className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
-            <a
+            <button
               key={item.label}
-              href={item.href}
-              className="font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors duration-150 hover:text-primary"
+              onClick={() => scrollToSection(item.id)}
+              className="font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors duration-150 hover:text-primary cursor-pointer"
             >
               {item.label}
-            </a>
+            </button>
           ))}
         </div>
 
@@ -55,14 +64,13 @@ const Navbar = () => {
           >
             <div className="container mx-auto flex flex-col gap-4 px-6 py-6">
               {navItems.map((item) => (
-                <a
+                <button
                   key={item.label}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary"
+                  onClick={() => scrollToSection(item.id)}
+                  className="text-left font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary py-2"
                 >
                   {item.label}
-                </a>
+                </button>
               ))}
             </div>
           </motion.div>
