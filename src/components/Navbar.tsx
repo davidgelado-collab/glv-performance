@@ -3,23 +3,34 @@ import { Menu, X } from "lucide-react";
 import logoGlv from "@/assets/logo-glv.png";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Añadimos "reseñas" que faltaba para que sea igual que tu Index.tsx
 const navItems = [
   { label: "Servicios", id: "servicios" },
   { label: "Buscador", id: "buscador" },
   { label: "Trabajos", id: "trabajos" },
+  { label: "Reseñas", id: "reseñas" }, // Agregado
   { label: "Contacto", id: "contacto" },
 ];
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
 
-  // FUNCIÓN MÁGICA PARA EVITAR EL 404
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      // Ajuste para que el Navbar fijo no tape el título de la sección
+      const offset = 90; 
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
     }
-    setOpen(false); // Cierra el menú móvil si está abierto
+    setOpen(false); 
   };
 
   return (
@@ -35,7 +46,7 @@ const Navbar = () => {
             <button
               key={item.label}
               onClick={() => scrollToSection(item.id)}
-              className="font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors duration-150 hover:text-primary cursor-pointer"
+              className="font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors duration-150 hover:text-primary cursor-pointer outline-none"
             >
               {item.label}
             </button>
@@ -45,10 +56,10 @@ const Navbar = () => {
         {/* Mobile toggle */}
         <button
           onClick={() => setOpen(!open)}
-          className="text-foreground md:hidden"
+          className="text-foreground md:hidden p-2"
           aria-label="Toggle menu"
         >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
 
@@ -59,15 +70,15 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.15 }}
-            className="border-t border-border bg-background md:hidden"
+            transition={{ duration: 0.2 }}
+            className="border-t border-border bg-background md:hidden overflow-hidden"
           >
-            <div className="container mx-auto flex flex-col gap-4 px-6 py-6">
+            <div className="container mx-auto flex flex-col px-6 py-4">
               {navItems.map((item) => (
                 <button
                   key={item.label}
                   onClick={() => scrollToSection(item.id)}
-                  className="text-left font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary py-2"
+                  className="text-left font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary py-4 border-b border-border/50 last:border-none"
                 >
                   {item.label}
                 </button>
