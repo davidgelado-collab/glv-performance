@@ -16,11 +16,32 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <HeroSection />
-      <ServicesSection />
-      <TuningSearch onRequestQuote={setVehiclePreset} />
-      <BuildsSection />
-      <ReviewsSection />
-      <ContactSection vehiclePreset={vehiclePreset} />
+      
+      {/* SECCIÓN SERVICIOS */}
+      <div id="servicios">
+        <ServicesSection />
+      </div>
+
+      {/* SECCIÓN BUSCADOR */}
+      <div id="buscador">
+        <TuningSearch onRequestQuote={setVehiclePreset} />
+      </div>
+
+      {/* SECCIÓN TRABAJOS (Builds) */}
+      <div id="trabajos">
+        <BuildsSection />
+      </div>
+
+      {/* SECCIÓN RESEÑAS */}
+      <div id="reseñas">
+        <ReviewsSection />
+      </div>
+
+      {/* SECCIÓN CONTACTO */}
+      <div id="contacto">
+        <ContactSection vehiclePreset={vehiclePreset} />
+      </div>
+
       <Footer />
       <WhatsAppButton />
     </div>
