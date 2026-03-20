@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Quote, MessageSquareEdit } from "lucide-react";
+import { Star, Quote, MessageSquareText } from "lucide-react"; // Se cambió MessageSquareEdit por MessageSquareText
 import { Button } from "@/components/ui/button";
 
 interface Review {
   id: string;
   name: string;
   vehicle: string | null;
-  service_type: string | null; // <-- AÑADIDO
+  service_type: string | null;
   rating: number;
   message: string;
   approved?: string | number;
@@ -21,7 +21,6 @@ const ReviewsSection = () => {
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          // Filtramos las aprobadas
           const approved = data.filter((r: any) => r.approved == 1 || r.approved === "1");
           setReviews(approved);
         }
@@ -110,7 +109,8 @@ const ReviewsSection = () => {
             onClick={() => window.location.href = "/#/feedback"}
             className="group border-primary/20 hover:border-primary"
           >
-            <MessageSquareEdit className="mr-2 h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+            {/* Se cambió MessageSquareEdit por MessageSquareText aquí también */}
+            <MessageSquareText className="mr-2 h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
             ¿Has trabajado con nosotros? Déjanos tu reseña
           </Button>
         </motion.div>
