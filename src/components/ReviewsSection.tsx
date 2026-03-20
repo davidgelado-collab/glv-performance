@@ -12,23 +12,32 @@ interface Review {
   status?: string;
 }
 
+// Asegúrate de que esta carpeta "api" sea donde está realmente el archivo reviews.php
 const API_BASE = "https://glvperformance.com/api";
 
 const ReviewsSection = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Conexión con tu backend PHP/MySQL
-    fetch(`${API_BASE}/get_reviews.php`)
-      .then((res) => res.json())
+    // Llamada al archivo correcto: reviews.php
+    fetch(`${API_BASE}/reviews.php`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Error al conectar con el servidor");
+        return res.json();
+      })
       .then((data) => {
         if (Array.isArray(data)) {
-          // Filtramos solo las que has aprobado en el Admin
+          // FILTRO ESTRICTO: Solo las que tengan status "approved"
           const approvedReviews = data.filter((r) => r.status === "approved");
           setReviews(approvedReviews);
         }
+        setLoading(false);
       })
-      .catch((err) => console.error("Error cargando reseñas desde MySQL:", err));
+      .catch((err) => {
+        console.error("Error cargando reseñas desde MySQL:", err);
+        setLoading(false);
+      });
   }, []);
 
   return (
@@ -62,7 +71,7 @@ const ReviewsSection = () => {
               >
                 <Quote className="mb-4 h-6 w-6 text-primary/30" />
 
-                <p className="mb-4 flex-grow font-body text-sm leading-relaxed text-muted-foreground">
+                <p className="mb-4 flex-grow font-body text-sm leading-relaxed text-muted-foreground italic">
                   "{review.message}"
                 </p>
 
@@ -71,7 +80,7 @@ const ReviewsSection = () => {
                     <Star
                       key={star}
                       className={`h-3.5 w-3.5 ${
-                        star <= review.rating
+                        star <= Number(review.rating)
                           ? "fill-primary text-primary"
                           : "text-muted-foreground/20"
                       }`}
@@ -99,8 +108,8 @@ const ReviewsSection = () => {
               </motion.div>
             ))
           ) : (
-            <div className="col-span-full text-center text-muted-foreground">
-              Cargando reseñas...
+            <div className="col-span-full text-center py-10 text-muted-foreground">
+              {loading ? "Cargando reseñas..." : "No hay reseñas aprobadas para mostrar."}
             </div>
           )}
         </div>
