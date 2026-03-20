@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom"; // IMPORTANTE: Añadimos esto
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin, CheckCircle } from "lucide-react";
@@ -10,6 +11,7 @@ interface ContactSectionProps {
 const API_BASE = "https://glvperformance.com/api";
 
 const ContactSection = ({ vehiclePreset = "" }: ContactSectionProps) => {
+  const [searchParams] = useSearchParams(); // Hook para leer la URL
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [vehicle, setVehicle] = useState("");
@@ -19,10 +21,19 @@ const ContactSection = ({ vehiclePreset = "" }: ContactSectionProps) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (vehiclePreset) {
+    // Lógica de autorelleno:
+    // 1. Miramos si hay un vehículo en la URL (?vehiculo=...)
+    // 2. Si no, usamos el vehiclePreset (si lo hubiera)
+    const vehicleFromUrl = searchParams.get("vehiculo");
+    
+    if (vehicleFromUrl) {
+      setVehicle(vehicleFromUrl);
+      // Opcional: Escribimos un inicio de mensaje automático
+      setMessage(`Hola, solicito presupuesto para Stage 1 de mi ${vehicleFromUrl}.`);
+    } else if (vehiclePreset) {
       setVehicle(vehiclePreset);
     }
-  }, [vehiclePreset]);
+  }, [vehiclePreset, searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
