@@ -7,23 +7,51 @@ interface TuningSearchProps {
   onRequestQuote?: (vehicle: string) => void;
 }
 
+/** Split "A1 (8X 2010-2014)" → { base: "A1", generation: "8X 2010-2014" } */
+function parseModelName(full: string): { base: string; generation: string } {
+  const match = full.match(/^(.+?)\s*\((.+)\)$/);
+  if (match) return { base: match[1].trim(), generation: match[2].trim() };
+  return { base: full, generation: "" };
+}
+
 const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
+  const [generation, setGeneration] = useState("");
   const [engine, setEngine] = useState("");
 
   const brands = useMemo(() => carDatabase.map((b) => b.name), []);
-  const models = useMemo(
-    () => carDatabase.find((b) => b.name === brand)?.models.map((m) => m.name) || [],
-    [brand]
-  );
+
+  // Unique base model names for the selected brand
+  const models = useMemo(() => {
+    const allModels = carDatabase.find((b) => b.name === brand)?.models || [];
+    const baseNames = allModels.map((m) => parseModelName(m.name).base);
+    return [...new Set(baseNames)];
+  }, [brand]);
+
+  // Generations for the selected base model
+  const generations = useMemo(() => {
+    const allModels = carDatabase.find((b) => b.name === brand)?.models || [];
+    return allModels
+      .filter((m) => parseModelName(m.name).base === model)
+      .map((m) => parseModelName(m.name).generation)
+      .filter(Boolean);
+  }, [brand, model]);
+
+  // Full model name reconstructed from base + generation
+  const fullModelName = useMemo(() => {
+    if (!model) return "";
+    if (!generation) return model;
+    return `${model} (${generation})`;
+  }, [model, generation]);
+
   const engines = useMemo(
     () =>
       carDatabase
         .find((b) => b.name === brand)
-        ?.models.find((m) => m.name === model)
+        ?.models.find((m) => m.name === fullModelName)
         ?.engines || [],
-    [brand, model]
+    [brand, fullModelName]
   );
 
   const selectedEngine: CarEngine | null = useMemo(
@@ -34,11 +62,18 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
   const handleBrandChange = (value: string) => {
     setBrand(value);
     setModel("");
+    setGeneration("");
     setEngine("");
   };
 
   const handleModelChange = (value: string) => {
     setModel(value);
+    setGeneration("");
+    setEngine("");
+  };
+
+  const handleGenerationChange = (value: string) => {
+    setGeneration(value);
     setEngine("");
   };
 
@@ -69,7 +104,7 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1, duration: 0.3 }}
-          className="mx-auto mb-10 grid max-w-4xl gap-4 md:grid-cols-3"
+          className="mx-auto mb-10 grid max-w-4xl gap-4 md:grid-cols-4"
         >
           <SelectField
             label="Marca"
@@ -87,12 +122,20 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
             disabled={!brand}
           />
           <SelectField
+            label="Generación"
+            placeholder={generations.length === 0 && model ? "Sin generaciones" : "Selecciona generación"}
+            options={generations}
+            value={generation}
+            onChange={handleGenerationChange}
+            disabled={!model || generations.length === 0}
+          />
+          <SelectField
             label="Motor"
             placeholder="Selecciona motor"
             options={engines.map((e) => e.name)}
             value={engine}
             onChange={setEngine}
-            disabled={!model}
+            disabled={generations.length > 0 ? !generation : !model}
           />
         </motion.div>
 
