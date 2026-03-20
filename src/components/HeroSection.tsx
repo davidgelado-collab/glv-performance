@@ -3,6 +3,14 @@ import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero-engine.jpg";
 
 const HeroSection = () => {
+  // Función para hacer scroll suave sin cambiar la URL
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative h-screen w-full overflow-hidden">
       {/* Background */}
@@ -47,16 +55,24 @@ const HeroSection = () => {
             </p>
 
             <div className="flex flex-wrap gap-3">
-              <a href="#servicios">
-                <Button variant="hero" size="lg" className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3">
-                  Nuestros Servicios
-                </Button>
-              </a>
-              <a href="#trabajos">
-                <Button variant="heroOutline" size="lg" className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3">
-                  Ver Trabajos
-                </Button>
-              </a>
+              {/* CAMBIO: Botones con onClick en lugar de <a> con href */}
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3 cursor-pointer"
+                onClick={() => scrollToSection('servicios')}
+              >
+                Nuestros Servicios
+              </Button>
+              
+              <Button 
+                variant="heroOutline" 
+                size="lg" 
+                className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3 cursor-pointer"
+                onClick={() => scrollToSection('trabajos')}
+              >
+                Ver Trabajos
+              </Button>
             </div>
           </motion.div>
         </div>
