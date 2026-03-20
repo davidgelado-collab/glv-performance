@@ -22,14 +22,12 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
 
   const brands = useMemo(() => carDatabase.map((b) => b.name), []);
 
-  // Unique base model names for the selected brand
   const models = useMemo(() => {
     const allModels = carDatabase.find((b) => b.name === brand)?.models || [];
     const baseNames = allModels.map((m) => parseModelName(m.name).base);
     return [...new Set(baseNames)];
   }, [brand]);
 
-  // Generations for the selected base model
   const generations = useMemo(() => {
     const allModels = carDatabase.find((b) => b.name === brand)?.models || [];
     return allModels
@@ -38,7 +36,6 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
       .filter(Boolean);
   }, [brand, model]);
 
-  // Full model name reconstructed from base + generation
   const fullModelName = useMemo(() => {
     if (!model) return "";
     if (!generation) return model;
@@ -77,6 +74,20 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
     setEngine("");
   };
 
+  // FUNCIÓN DE NAVEGACIÓN CORREGIDA PARA ARSYS
+  const handlePresupuestoClick = () => {
+    const vehiculoCompleto = `${brand} ${model}${generation ? ` (${generation})` : ""} - ${engine}`;
+    
+    // Llamamos a la prop original por si hay lógica extra
+    if (onRequestQuote) {
+      onRequestQuote(vehiculoCompleto);
+    }
+
+    // Redirección forzada usando el Hash de Arsys
+    // Esto envía al usuario a /#/contacto y le pasa el coche como parámetro
+    window.location.href = `/#/contacto?vehiculo=${encodeURIComponent(vehiculoCompleto)}`;
+  };
+
   return (
     <section id="buscador" className="border-t border-border bg-background py-24">
       <div className="container mx-auto px-6">
@@ -98,7 +109,6 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
           </p>
         </motion.div>
 
-        {/* Selectors */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -139,7 +149,6 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
           />
         </motion.div>
 
-        {/* Results */}
         <AnimatePresence mode="wait">
           {selectedEngine && (
             <motion.div
@@ -150,7 +159,6 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
               transition={{ duration: 0.2 }}
               className="mx-auto max-w-4xl"
             >
-              {/* Header */}
               <div className="mb-6 rounded-sm border border-border bg-card p-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
@@ -168,7 +176,6 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
                 </div>
               </div>
 
-              {/* Power comparison */}
               <div className="grid gap-4 md:grid-cols-2">
                 <PowerCard
                   icon={<Zap className="h-5 w-5" />}
@@ -186,18 +193,17 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
                 />
               </div>
 
-              {/* CTA */}
+              {/* CTA CORREGIDO */}
               <div className="mt-6 rounded-sm border border-primary/30 bg-primary/5 p-6 text-center">
                 <p className="mb-3 font-body text-sm text-muted-foreground">
                   ¿Quieres estos resultados en tu {brand} {model}?
                 </p>
-                <a
-                  href="#contacto"
-                  onClick={() => onRequestQuote?.(`${brand} ${model}${generation ? ` (${generation})` : ""} - ${engine}`)}
+                <button
+                  onClick={handlePresupuestoClick}
                   className="inline-block rounded-sm bg-primary px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all duration-150 hover:bg-primary/80"
                 >
                   Solicitar Presupuesto
-                </a>
+                </button>
               </div>
             </motion.div>
           )}
@@ -206,6 +212,8 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
     </section>
   );
 };
+
+// ... (Resto de funciones SelectField y PowerCard se mantienen igual)
 
 function SelectField({
   label,
@@ -286,7 +294,6 @@ function PowerCard({
         </div>
       </div>
 
-      {/* Progress bar */}
       <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
         <motion.div
           initial={{ width: 0 }}
