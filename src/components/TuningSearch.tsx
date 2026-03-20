@@ -7,7 +7,6 @@ interface TuningSearchProps {
   onRequestQuote?: (vehicle: string) => void;
 }
 
-/** Split "A1 (8X 2010-2014)" → { base: "A1", generation: "8X 2010-2014" } */
 function parseModelName(full: string): { base: string; generation: string } {
   const match = full.match(/^(.+?)\s*\((.+)\)$/);
   if (match) return { base: match[1].trim(), generation: match[2].trim() };
@@ -26,7 +25,7 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
     const allModels = carDatabase.find((b) => b.name === brand)?.models || [];
     const baseNames = allModels.map((m) => parseModelName(m.name).base);
     return [...new Set(baseNames)];
-  }, [brand]);
+  }, [brand, model]);
 
   const generations = useMemo(() => {
     const allModels = carDatabase.find((b) => b.name === brand)?.models || [];
@@ -74,18 +73,20 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
     setEngine("");
   };
 
-  // FUNCIÓN DE NAVEGACIÓN CORREGIDA PARA ARSYS
+  // FUNCIÓN CORREGIDA: HACE SCROLL Y RELLENA EL FORMULARIO
   const handlePresupuestoClick = () => {
     const vehiculoCompleto = `${brand} ${model}${generation ? ` (${generation})` : ""} - ${engine}`;
     
-    // Llamamos a la prop original por si hay lógica extra
+    // 1. Enviamos el vehículo al estado global de Index.tsx para que ContactSection lo reciba
     if (onRequestQuote) {
       onRequestQuote(vehiculoCompleto);
     }
 
-    // Redirección forzada usando el Hash de Arsys
-    // Esto envía al usuario a /#/contacto y le pasa el coche como parámetro
-    window.location.href = `/#/contacto?vehiculo=${encodeURIComponent(vehiculoCompleto)}`;
+    // 2. Hacemos scroll suave hasta la sección de contacto (ID definido en Index.tsx)
+    const contactSection = document.getElementById('contacto');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -193,14 +194,13 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
                 />
               </div>
 
-              {/* CTA CORREGIDO */}
               <div className="mt-6 rounded-sm border border-primary/30 bg-primary/5 p-6 text-center">
                 <p className="mb-3 font-body text-sm text-muted-foreground">
                   ¿Quieres estos resultados en tu {brand} {model}?
                 </p>
                 <button
                   onClick={handlePresupuestoClick}
-                  className="inline-block rounded-sm bg-primary px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all duration-150 hover:bg-primary/80"
+                  className="inline-block cursor-pointer rounded-sm bg-primary px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all duration-150 hover:bg-primary/80"
                 >
                   Solicitar Presupuesto
                 </button>
@@ -213,7 +213,7 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
   );
 };
 
-// ... (Resto de funciones SelectField y PowerCard se mantienen igual)
+// ... SelectField y PowerCard se mantienen igual que en tu código original
 
 function SelectField({
   label,
