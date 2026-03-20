@@ -104,7 +104,7 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1, duration: 0.3 }}
-          className="mx-auto mb-10 grid max-w-4xl gap-4 md:grid-cols-3"
+          className="mx-auto mb-10 grid max-w-4xl gap-4 md:grid-cols-4"
         >
           <SelectField
             label="Marca"
@@ -122,12 +122,20 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
             disabled={!brand}
           />
           <SelectField
+            label="Generación"
+            placeholder={generations.length === 0 && model ? "Sin generaciones" : "Selecciona generación"}
+            options={generations}
+            value={generation}
+            onChange={handleGenerationChange}
+            disabled={!model || generations.length === 0}
+          />
+          <SelectField
             label="Motor"
             placeholder="Selecciona motor"
             options={engines.map((e) => e.name)}
             value={engine}
             onChange={setEngine}
-            disabled={!model}
+            disabled={generations.length > 0 ? !generation : !model}
           />
         </motion.div>
 
