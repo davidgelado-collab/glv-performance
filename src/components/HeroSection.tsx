@@ -3,12 +3,17 @@ import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero-engine.jpg";
 
 const HeroSection = () => {
-  // Función para hacer scroll suave sin cambiar la URL
+  // Función para hacer scroll suave dentro de la misma página
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  // Función para navegar a otras páginas usando el Hash de React
+  const navigateTo = (path: string) => {
+    window.location.hash = path;
   };
 
   return (
@@ -55,23 +60,23 @@ const HeroSection = () => {
             </p>
 
             <div className="flex flex-wrap gap-3">
-              {/* CAMBIO: Botones con onClick en lugar de <a> con href */}
+              {/* BOTÓN PRESUPUESTO - CORRIGE EL 404 */}
               <Button 
                 variant="hero" 
                 size="lg" 
                 className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3 cursor-pointer"
-                onClick={() => scrollToSection('servicios')}
+                onClick={() => navigateTo('/contacto')}
               >
-                Nuestros Servicios
+                Solicitar Presupuesto
               </Button>
               
               <Button 
                 variant="heroOutline" 
                 size="lg" 
                 className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3 cursor-pointer"
-                onClick={() => scrollToSection('trabajos')}
+                onClick={() => scrollToSection('servicios')}
               >
-                Ver Trabajos
+                Nuestros Servicios
               </Button>
             </div>
           </motion.div>
