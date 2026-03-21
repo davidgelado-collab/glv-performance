@@ -25,7 +25,7 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
     const allModels = carDatabase.find((b) => b.name === brand)?.models || [];
     const baseNames = allModels.map((m) => parseModelName(m.name).base);
     return [...new Set(baseNames)];
-  }, [brand, model]);
+  }, [brand]);
 
   const generations = useMemo(() => {
     const allModels = carDatabase.find((b) => b.name === brand)?.models || [];
@@ -37,11 +37,12 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
 
   const fullModelName = useMemo(() => {
     if (!model) return "";
+    if (!generation && generations.length > 0) return ""; 
     if (!generation) return model;
     return `${model} (${generation})`;
-  }, [model, generation]);
+  }, [model, generation, generations]);
 
-  const engines = useMemo(
+  const enginesList = useMemo(
     () =>
       carDatabase
         .find((b) => b.name === brand)
@@ -50,9 +51,20 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
     [brand, fullModelName]
   );
 
+  // --- LÓGICA DE AGRUPACIÓN ESTILO ALIENSHOP ---
+  const groupedEngines = useMemo(() => {
+    return enginesList.reduce((acc, eng) => {
+      // Normalizamos el nombre del combustible
+      const fuel = eng.fuel.toLowerCase().includes("diesel") ? "DIÉSEL" : "GASOLINA";
+      if (!acc[fuel]) acc[fuel] = [];
+      acc[fuel].push(eng.name);
+      return acc;
+    }, {} as Record<string, string[]>);
+  }, [enginesList]);
+
   const selectedEngine: CarEngine | null = useMemo(
-    () => engines.find((e) => e.name === engine) || null,
-    [engines, engine]
+    () => enginesList.find((e) => e.name === engine) || null,
+    [enginesList, engine]
   );
 
   const handleBrandChange = (value: string) => {
@@ -73,20 +85,10 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
     setEngine("");
   };
 
-  // FUNCIÓN CORREGIDA: HACE SCROLL Y RELLENA EL FORMULARIO
   const handlePresupuestoClick = () => {
     const vehiculoCompleto = `${brand} ${model}${generation ? ` (${generation})` : ""} - ${engine}`;
-    
-    // 1. Enviamos el vehículo al estado global de Index.tsx para que ContactSection lo reciba
-    if (onRequestQuote) {
-      onRequestQuote(vehiculoCompleto);
-    }
-
-    // 2. Hacemos scroll suave hasta la sección de contacto (ID definido en Index.tsx)
-    const contactSection = document.getElementById('contacto');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (onRequestQuote) onRequestQuote(vehiculoCompleto);
+    document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -105,9 +107,6 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
           <h2 className="mt-3 font-display text-4xl font-bold uppercase md:text-5xl">
             Buscador Stage 1
           </h2>
-          <p className="mx-auto mt-4 max-w-lg font-body text-muted-foreground">
-            Selecciona tu vehículo y descubre la potencia que puedes obtener con nuestra reprogramación Stage 1.
-          </p>
         </motion.div>
 
         <motion.div
@@ -140,13 +139,15 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
             onChange={handleGenerationChange}
             disabled={!model || generations.length === 0}
           />
+          
+          {/* CAMPO MOTOR CON AGRUPACIÓN */}
           <SelectField
             label="Motor"
             placeholder="Selecciona motor"
-            options={engines.map((e) => e.name)}
             value={engine}
             onChange={setEngine}
             disabled={generations.length > 0 ? !generation : !model}
+            groupedOptions={groupedEngines} 
           />
         </motion.div>
 
@@ -157,9 +158,9 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
               className="mx-auto max-w-4xl"
             >
+              {/* Contenido de resultados... (Igual que el tuyos) */}
               <div className="mb-6 rounded-sm border border-border bg-card p-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
@@ -195,12 +196,9 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
               </div>
 
               <div className="mt-6 rounded-sm border border-primary/30 bg-primary/5 p-6 text-center">
-                <p className="mb-3 font-body text-sm text-muted-foreground">
-                  ¿Quieres estos resultados en tu {brand} {model}?
-                </p>
                 <button
                   onClick={handlePresupuestoClick}
-                  className="inline-block cursor-pointer rounded-sm bg-primary px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all duration-150 hover:bg-primary/80"
+                  className="inline-block cursor-pointer rounded-sm bg-primary px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all hover:bg-primary/80"
                 >
                   Solicitar Presupuesto
                 </button>
@@ -213,19 +211,20 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
   );
 };
 
-// ... SelectField y PowerCard se mantienen igual que en tu código original
-
+// --- SELECTFIELD ACTUALIZADO PARA SOPORTAR AGRUPACIÓN ---
 function SelectField({
   label,
   placeholder,
   options,
+  groupedOptions,
   value,
   onChange,
   disabled = false,
 }: {
   label: string;
   placeholder: string;
-  options: string[];
+  options?: string[];
+  groupedOptions?: Record<string, string[]>;
   value: string;
   onChange: (val: string) => void;
   disabled?: boolean;
@@ -243,11 +242,26 @@ function SelectField({
           className="w-full appearance-none rounded-sm border border-border bg-card px-4 py-3 pr-10 font-body text-sm text-foreground transition-colors focus:border-primary focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
         >
           <option value="">{placeholder}</option>
-          {options.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
+          
+          {/* Si hay opciones agrupadas (Motores) */}
+          {groupedOptions ? (
+            Object.entries(groupedOptions).map(([fuel, engs]) => (
+              <optgroup key={fuel} label={fuel} className="bg-muted text-primary font-bold">
+                {engs.map((opt) => (
+                  <option key={opt} value={opt} className="bg-card text-foreground font-normal">
+                    {opt}
+                  </option>
+                ))}
+              </optgroup>
+            ))
+          ) : (
+            /* Si son opciones normales (Marca, Modelo, Generación) */
+            options?.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))
+          )}
         </select>
         <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       </div>
@@ -255,6 +269,7 @@ function SelectField({
   );
 }
 
+// Mantener PowerCard igual...
 function PowerCard({
   icon,
   title,
