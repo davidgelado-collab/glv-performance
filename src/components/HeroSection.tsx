@@ -3,17 +3,21 @@ import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero-engine.jpg";
 
 const HeroSection = () => {
-  // Función para hacer scroll suave dentro de la misma página
+  // FUNCIÓN DE SCROLL: Maneja el offset para que el Navbar no tape el contenido
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+      const offset = 90; // Altura del Navbar fijo
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
 
-  // Función para navegar a otras páginas usando el Hash de React
-  const navigateTo = (path: string) => {
-    window.location.hash = path;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
   };
 
   return (
@@ -60,23 +64,24 @@ const HeroSection = () => {
             </p>
 
             <div className="flex flex-wrap gap-3">
-              {/* BOTÓN PRESUPUESTO - CORRIGE EL 404 */}
+              {/* PRIMER BOTÓN: SERVICIOS (Estilo Resaltado) */}
               <Button 
                 variant="hero" 
-                size="lg" 
-                className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3 cursor-pointer"
-                onClick={() => navigateTo('/contacto')}
-              >
-                Solicitar Presupuesto
-              </Button>
-              
-              <Button 
-                variant="heroOutline" 
                 size="lg" 
                 className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3 cursor-pointer"
                 onClick={() => scrollToSection('servicios')}
               >
                 Nuestros Servicios
+              </Button>
+              
+              {/* SEGUNDO BOTÓN: PRESUPUESTO (Estilo Outline) */}
+              <Button 
+                variant="heroOutline" 
+                size="lg" 
+                className="text-sm px-5 py-2.5 md:text-base md:px-6 md:py-3 cursor-pointer"
+                onClick={() => scrollToSection('contacto')}
+              >
+                Solicitar Presupuesto
               </Button>
             </div>
           </motion.div>
