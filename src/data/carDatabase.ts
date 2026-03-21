@@ -126,6 +126,8 @@ export const carDatabase: CarBrand[] = [
           { name: "1.0 ECOBOOST 125hp", year: "2011-2014", originalHP: 125, originalTorque: 220, stage1HP: 145, stage1Torque: 240, fuel: "Gasolina" },          
         ],
       },
+      ],
+  },
   // ─── VOLKSWAGEN ───────────────────────────────────────────────
   {
     name: "Volkswagen",
