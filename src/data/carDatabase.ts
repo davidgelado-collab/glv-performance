@@ -120,9 +120,10 @@ export const carDatabase: CarBrand[] = [
     name: "Ford",
     models: [
       {
-        name: "Golf 7 (2012-2016)",
+        name: "Focus (2011-2014)",
         engines: [
-          { name: "1.2 TSI 110hp", year: "2012-2016", originalHP: 110, originalTorque: 175, stage1HP: 140, stage1Torque: 235, fuel: "Gasolina" },
+           { name: "FOCUS 1.0 ECOBOOST 100hp", year: "2011-2014", originalHP: 100, originalTorque: 170, stage1HP: 145, stage1Torque: 240, fuel: "Gasolina" },
+          { name: "FOCUS 1.0 ECOBOOST 125hp", year: "2011-2014", originalHP: 125, originalTorque: 200, stage1HP: 145, stage1Torque: 240, fuel: "Gasolina" },         
         ],
       },      
     ],
@@ -130,14 +131,7 @@ export const carDatabase: CarBrand[] = [
   // ─── VOLKSWAGEN ───────────────────────────────────────────────
   {
     name: "Volkswagen",
-    models: [
-      {
-        name: "Focus (2011-2014)",
-        engines: [
-          { name: "FOCUS 1.0 ECOBOOST 100hp", year: "2011-2014", originalHP: 100, originalTorque: 170, stage1HP: 145, stage1Torque: 240, fuel: "Gasolina" },
-          { name: "FOCUS 1.0 ECOBOOST 125hp", year: "2011-2014", originalHP: 125, originalTorque: 200, stage1HP: 145, stage1Torque: 240, fuel: "Gasolina" },
-        ],
-      },
+    models: [      
       {
       name: "PASSAT / MAGOTAN (B6 2005-2010)",
         engines: [
