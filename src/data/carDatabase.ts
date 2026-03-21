@@ -115,6 +115,17 @@ export const carDatabase: CarBrand[] = [
       },
     ],
   },
+  // ─── FORD ───────────────────────────────────────────────
+  {
+    name: "Ford",
+    models: [
+      {
+        name: "Focus (2011-2014)",
+        engines: [
+          { name: "1.0 ECOBOOST 100hp", year: "2011-2014", originalHP: 100, originalTorque: 175, stage1HP: 145, stage1Torque: 240, fuel: "Gasolina" },
+          { name: "1.0 ECOBOOST 125hp", year: "2011-2014", originalHP: 125, originalTorque: 220, stage1HP: 145, stage1Torque: 240, fuel: "Gasolina" },          
+        ],
+      },
   // ─── VOLKSWAGEN ───────────────────────────────────────────────
   {
     name: "Volkswagen",
