@@ -39,10 +39,10 @@ export const carDatabase: CarBrand[] = [
           { name: "1.4 TFSI 185hp", year: "2010-2014", originalHP: 185, originalTorque: 250, stage1HP: 210, stage1Torque: 300, fuel: "Gasolina" },
           { name: "2.0 TFSI 256hp", year: "2010-2014", originalHP: 256, originalTorque: 350, stage1HP: 300, stage1Torque: 420, fuel: "Gasolina" },
           { name: "S1 2.0 TFSI 231hp", year: "2010-2014", originalHP: 231, originalTorque: 370, stage1HP: 300, stage1Torque: 440, fuel: "Gasolina" },
-          { name: "1.6 TDI CR 90hp", year: "2010-2014", originalHP: 90, originalTorque: 230, stage1HP: 140, stage1Torque: 320, fuel: "Diésel" },
-          { name: "1.6 TDI CR 105hp", year: "2010-2014", originalHP: 105, originalTorque: 250, stage1HP: 140, stage1Torque: 320, fuel: "Diésel" },
-          { name: "2.0 TDI CR 136hp", year: "2010-2014", originalHP: 136, originalTorque: 320, stage1HP: 185, stage1Torque: 400, fuel: "Diésel" },
-          { name: "2.0 TDI CR 143hp", year: "2010-2014", originalHP: 143, originalTorque: 320, stage1HP: 185, stage1Torque: 400, fuel: "Diésel" },
+          { name: "1.6 TDI CR 90hp", year: "2010-2014", originalHP: 90, originalTorque: 230, stage1HP: 140, stage1Torque: 320, fuel: "Diesel" },
+          { name: "1.6 TDI CR 105hp", year: "2010-2014", originalHP: 105, originalTorque: 250, stage1HP: 140, stage1Torque: 320, fuel: "Diesel" },
+          { name: "2.0 TDI CR 136hp", year: "2010-2014", originalHP: 136, originalTorque: 320, stage1HP: 185, stage1Torque: 400, fuel: "Diesel" },
+          { name: "2.0 TDI CR 143hp", year: "2010-2014", originalHP: 143, originalTorque: 320, stage1HP: 185, stage1Torque: 400, fuel: "Diesel" },
         ],
       },
       {
@@ -55,8 +55,8 @@ export const carDatabase: CarBrand[] = [
           { name: "1.4 TFSI (COD) 150hp", year: "2015-2017", originalHP: 150, originalTorque: 200, stage1HP: 170, stage1Torque: 300, fuel: "Gasolina" },
           { name: "1.8 TFSI 192hp", year: "2015-2017", originalHP: 192, originalTorque: 250, stage1HP: 220, stage1Torque: 380, fuel: "Gasolina" },
           { name: "S1 2.0 TFSI 231hp", year: "2015-2017", originalHP: 231, originalTorque: 370, stage1HP: 300, stage1Torque: 440, fuel: "Gasolina" },
-          { name: "1.4 TDI 90hp", year: "2015-2017", originalHP: 90, originalTorque: 230, stage1HP: 115, stage1Torque: 280, fuel: "Diésel" },
-          { name: "1.6 TDI 116hp", year: "2015-2017", originalHP: 116, originalTorque: 250, stage1HP: 145, stage1Torque: 310, fuel: "Diésel" },
+          { name: "1.4 TDI 90hp", year: "2015-2017", originalHP: 90, originalTorque: 230, stage1HP: 115, stage1Torque: 280, fuel: "Diesel" },
+          { name: "1.6 TDI 116hp", year: "2015-2017", originalHP: 116, originalTorque: 250, stage1HP: 145, stage1Torque: 310, fuel: "Diesel" },
         ],
       },
       {
@@ -183,14 +183,14 @@ export const carDatabase: CarBrand[] = [
       {
       name: "PASSAT / MAGOTAN (B6 2005-2010)",
         engines: [
-          { name: "2.0 TDI 170hp", year: "2005-2010", originalHP: 170, originalTorque: 350, stage1HP: 200, stage1Torque: 420, fuel: "Diésel" },
+          { name: "2.0 TDI 170hp", year: "2005-2010", originalHP: 170, originalTorque: 350, stage1HP: 200, stage1Torque: 420, fuel: "Diesel" },
         ],
       },
       {
       name: "PASSAT / MAGOTAN (B8 2014-2019)",
         engines: [
-          { name: "2.0 TDI CR 150hp", year: "2014-2019", originalHP: 150, originalTorque: 340, stage1HP: 190, stage1Torque: 420, fuel: "Diésel" },
-          { name: "2.0 TDI CR 190hp", year: "2014-2019", originalHP: 190, originalTorque: 400, stage1HP: 225, stage1Torque: 460, fuel: "Diésel" },
+          { name: "2.0 TDI CR 150hp", year: "2014-2019", originalHP: 150, originalTorque: 340, stage1HP: 190, stage1Torque: 420, fuel: "Diesel" },
+          { name: "2.0 TDI CR 190hp", year: "2014-2019", originalHP: 190, originalTorque: 400, stage1HP: 225, stage1Torque: 460, fuel: "Diesel" },
         ],
       },
     ],
