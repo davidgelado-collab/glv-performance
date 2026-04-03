@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
@@ -53,99 +53,65 @@ if ($action === 'login') {
     exit;
 }
 
-// --- ACCIÓN: CAMBIAR CONTRASEÑA ---
-if ($action === 'update_password') {
-    $newPass = $d['password'] ?? '';
-    // El ID suele venir en el objeto user de la sesión, asegúrate que el client lo envíe
-    $userId = $d['user_id'] ?? ''; 
-
-    if ($newPass && $userId) {
-        $s = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-        $s->bind_param("ss", $newPass, $userId);
-        if ($s->execute()) {
-            echo json_encode(["success" => true]);
-        } else {
-            echo json_encode(["error" => $conn->error]);
-        }
-    }
-    exit;
-}
-
-// --- MÉTODO POST: INSERTAR DATOS (Eventos o Usuarios) ---
+// --- MÉTODO POST: INSERTAR DATOS ---
 if ($method === 'POST' && $table !== '') {
-    
-    // CASO A: Crear Eventos
     if ($table === 'events') {
         $start = isset($d['start_datetime']) ? str_replace(['T', 'Z'], [' ', ''], substr($d['start_datetime'], 0, 19)) : date('Y-m-d H:i:s');
         $end = isset($d['end_datetime']) ? str_replace(['T', 'Z'], [' ', ''], substr($d['end_datetime'], 0, 19)) : $start;
-        
         $title = $d['title'] ?? 'Sin título';
-        $loc   = $d['location'] ?? '';
-        $desc  = $d['description'] ?? '';
-        $img   = $d['image_url'] ?? '';
-        $priv  = (isset($d['is_private']) && $d['is_private'] == true) ? 1 : 0;
+        $loc = $d['location'] ?? '';
+        $desc = $d['description'] ?? '';
+        $img = $d['image_url'] ?? '';
+        $priv = (isset($d['is_private']) && $d['is_private'] == true) ? 1 : 0;
 
-        $sql = "INSERT INTO events (title, description, start_datetime, end_datetime, location, image_url, is_private) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) die(json_encode(["error" => "Error SQL Events: " . $conn->error]));
-
+        $stmt = $conn->prepare("INSERT INTO events (title, description, start_datetime, end_datetime, location, image_url, is_private) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssssi", $title, $desc, $start, $end, $loc, $img, $priv);
-        
-        if ($stmt->execute()) {
-            echo json_encode(["success" => true, "id" => $conn->insert_id]);
-        } else {
-            echo json_encode(["error" => $stmt->error]);
-        }
+        if ($stmt->execute()) echo json_encode(["success" => true, "id" => $conn->insert_id]);
+        else echo json_encode(["error" => $stmt->error]);
         exit;
     }
 
-    // CASO B: Crear Usuarios (Desde Panel Admin)
     if ($table === 'users') {
         $email = trim($d['email'] ?? '');
-        $pass  = trim($d['password'] ?? '');
-        $name  = trim($d['name'] ?? explode('@', $email)[0]);
-        $role  = strtolower(trim($d['role'] ?? 'user'));
-
-        if (empty($email) || empty($pass)) {
-            die(json_encode(["error" => "Email y password obligatorios"]));
-        }
-
-        $sql = "INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) die(json_encode(["error" => "Error SQL Users: " . $conn->error]));
-
-        $stmt->bind_param("ssss", $email, $pass, $name, $role);
+        $pass = trim($d['password'] ?? '');
+        $name = trim($d['name'] ?? explode('@', $email)[0]);
+        $role = strtolower(trim($d['role'] ?? 'user'));
         
-        if ($stmt->execute()) {
-            echo json_encode(["success" => true, "id" => $conn->insert_id]);
-        } else {
-            echo json_encode(["error" => $stmt->error]);
-        }
+        $stmt = $conn->prepare("INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $email, $pass, $name, $role);
+        if ($stmt->execute()) echo json_encode(["success" => true, "id" => $conn->insert_id]);
+        else echo json_encode(["error" => $stmt->error]);
         exit;
     }
 }
 
-// --- MÉTODO GET: LECTURA DE TABLAS ---
+// --- MÉTODO GET: LECTURA ---
 if ($method === 'GET' && $table !== '') {
-    $allowed = ['events', 'user_roles', 'reviews', 'users'];
-    if (!in_array($table, $allowed)) {
-        echo json_encode([]);
-        exit;
-    }
+    $allowed = ['events', 'users', 'reviews'];
+    if (!in_array($table, $allowed)) die(json_encode([]));
 
     $res = $conn->query("SELECT * FROM $table");
     $rows = [];
-    if ($res) {
-        while($r = $res->fetch_assoc()) { 
-            if (isset($r['password'])) unset($r['password']); // No enviar contraseñas en los listados
-            $rows[] = $r; 
-        }
+    while($r = $res->fetch_assoc()) {
+        if (isset($r['password'])) unset($r['password']);
+        $rows[] = $r;
     }
     echo json_encode($rows);
     exit;
 }
 
-// Respuesta por defecto
-echo json_encode(["status" => "online", "message" => "API GLV Performance lista"]);
+// --- MÉTODO DELETE: ELIMINAR ---
+if ($method === 'DELETE' && $table !== '') {
+    $id = $_GET['id'] ?? '';
+    if (!$id) die(json_encode(["error" => "ID no proporcionado"]));
+
+    $stmt = $conn->prepare("DELETE FROM $table WHERE id = ?");
+    $stmt->bind_param("s", $id);
+    if ($stmt->execute()) echo json_encode(["success" => true]);
+    else echo json_encode(["error" => $stmt->error]);
+    exit;
+}
+
+echo json_encode(["status" => "online"]);
 $conn->close();
 ?>
