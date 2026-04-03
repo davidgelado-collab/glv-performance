@@ -17,7 +17,7 @@ if ($conn->connect_error) {
     die(json_encode(["error" => "Conexión fallida: " . $conn->connect_error]));
 }
 
-// --- LÓGICA DE LOGIN ---
+// --- LÓGICA DE LOGIN --- (Ya la tenías, se mantiene igual)
 if (isset($_GET['action']) && $_GET['action'] == 'login') {
     $input = file_get_contents('php://input');
     $d = json_decode($input, true);
@@ -47,7 +47,29 @@ if (isset($_GET['action']) && $_GET['action'] == 'login') {
     exit;
 }
 
-// --- LECTURA DE TABLAS ---
+// --- NUEVA LÓGICA: ACTUALIZAR CONTRASEÑA ---
+if (isset($_GET['action']) && $_GET['action'] == 'update_password') {
+    $input = file_get_contents('php://input');
+    $d = json_decode($input, true);
+    
+    $newPass = $d['password'] ?? '';
+    $userId = $d['user_id'] ?? '';
+    
+    if ($newPass && $userId) {
+        $s = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $s->bind_param("ss", $newPass, $userId);
+        if ($s->execute()) {
+            echo json_encode(["success" => true]);
+        } else {
+            echo json_encode(["success" => false, "error" => "Error al actualizar"]);
+        }
+    } else {
+        echo json_encode(["success" => false, "error" => "Datos incompletos"]);
+    }
+    exit;
+}
+
+// --- LECTURA DE TABLAS --- (Se mantiene igual)
 if (isset($_GET['table'])) {
     $t = $_GET['table'];
     $allowed = ['events', 'user_roles', 'reviews', 'users'];
@@ -68,7 +90,6 @@ if (isset($_GET['table'])) {
     exit;
 }
 
-// Si no hay acción ni tabla, mostramos que el archivo está vivo
 echo json_encode(["status" => "online", "message" => "Esperando tabla o accion"]);
 $conn->close();
 ?>
