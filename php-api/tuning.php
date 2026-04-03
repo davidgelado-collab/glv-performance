@@ -12,7 +12,7 @@ header("Content-Type: application/json");
 
 // DATOS DE CONEXIÓN - ¡Revísalos bien!
 $host = "localhost"; 
-$user = "tu_usuario_de_arsys"; 
+$user = "qaqb246"; 
 $pass = 'tu_password_de_arsys'; 
 $db   = "tu_base_de_datos";
 
