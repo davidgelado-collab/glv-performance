@@ -1,5 +1,5 @@
 <?php
-// Reporte de errores para diagnóstico
+// 1. Configuración de errores y cabeceras
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -10,21 +10,21 @@ header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') exit;
 
-// Conexión
+// 2. Conexión a la base de datos
 $conn = new mysqli("qaqb246.glvperformance.com", "qaqb246", "@@07O5pmuxxx", "qaqb246");
 
 if ($conn->connect_error) {
     die(json_encode(["error" => "Conexión fallida: " . $conn->connect_error]));
 }
 
-// Obtenemos el método y los datos de entrada
+// 3. Captura de datos de entrada
 $method = $_SERVER['REQUEST_METHOD'];
 $input = file_get_contents('php://input');
 $d = json_decode($input, true);
 $table = $_GET['table'] ?? '';
 $action = $_GET['action'] ?? '';
 
-// --- 1. LÓGICA DE LOGIN ---
+// --- ACCIÓN: LOGIN ---
 if ($action === 'login') {
     $e = trim($d['email'] ?? '');
     $p = trim($d['password'] ?? '');
@@ -48,41 +48,84 @@ if ($action === 'login') {
         ]);
     } else {
         http_response_code(401);
-        echo json_encode(["error" => "Credenciales incorrectas"]);
+        echo json_encode(["error" => "Email o contraseña incorrectos"]);
     }
     exit;
 }
 
-// --- 2. CREAR EVENTOS (POST) ---
-if ($method === 'POST' && $table === 'events') {
-    // Limpiamos las fechas para MySQL (Quitamos la T y la Z de ISO String)
-    $start = isset($d['start_datetime']) ? str_replace(['T', 'Z'], [' ', ''], substr($d['start_datetime'], 0, 19)) : date('Y-m-d H:i:s');
-    $end = isset($d['end_datetime']) ? str_replace(['T', 'Z'], [' ', ''], substr($d['end_datetime'], 0, 19)) : $start;
-    
-    $title = $d['title'] ?? 'Sin título';
-    $loc   = $d['location'] ?? '';
-    $desc  = $d['description'] ?? '';
-    $img   = $d['image_url'] ?? '';
-    $priv  = (isset($d['is_private']) && $d['is_private'] == true) ? 1 : 0;
+// --- ACCIÓN: CAMBIAR CONTRASEÑA ---
+if ($action === 'update_password') {
+    $newPass = $d['password'] ?? '';
+    // El ID suele venir en el objeto user de la sesión, asegúrate que el client lo envíe
+    $userId = $d['user_id'] ?? ''; 
 
-    $sql = "INSERT INTO events (title, description, start_datetime, end_datetime, location, image_url, is_private) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        die(json_encode(["error" => "Error SQL: " . $conn->error]));
-    }
-
-    $stmt->bind_param("ssssssi", $title, $desc, $start, $end, $loc, $img, $priv);
-    
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true, "id" => $conn->insert_id]);
-    } else {
-        echo json_encode(["error" => "Error al guardar: " . $stmt->error]);
+    if ($newPass && $userId) {
+        $s = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $s->bind_param("ss", $newPass, $userId);
+        if ($s->execute()) {
+            echo json_encode(["success" => true]);
+        } else {
+            echo json_encode(["error" => $conn->error]);
+        }
     }
     exit;
 }
 
-// --- 3. LECTURA DE TABLAS (GET) ---
+// --- MÉTODO POST: INSERTAR DATOS (Eventos o Usuarios) ---
+if ($method === 'POST' && $table !== '') {
+    
+    // CASO A: Crear Eventos
+    if ($table === 'events') {
+        $start = isset($d['start_datetime']) ? str_replace(['T', 'Z'], [' ', ''], substr($d['start_datetime'], 0, 19)) : date('Y-m-d H:i:s');
+        $end = isset($d['end_datetime']) ? str_replace(['T', 'Z'], [' ', ''], substr($d['end_datetime'], 0, 19)) : $start;
+        
+        $title = $d['title'] ?? 'Sin título';
+        $loc   = $d['location'] ?? '';
+        $desc  = $d['description'] ?? '';
+        $img   = $d['image_url'] ?? '';
+        $priv  = (isset($d['is_private']) && $d['is_private'] == true) ? 1 : 0;
+
+        $sql = "INSERT INTO events (title, description, start_datetime, end_datetime, location, image_url, is_private) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) die(json_encode(["error" => "Error SQL Events: " . $conn->error]));
+
+        $stmt->bind_param("ssssssi", $title, $desc, $start, $end, $loc, $img, $priv);
+        
+        if ($stmt->execute()) {
+            echo json_encode(["success" => true, "id" => $conn->insert_id]);
+        } else {
+            echo json_encode(["error" => $stmt->error]);
+        }
+        exit;
+    }
+
+    // CASO B: Crear Usuarios (Desde Panel Admin)
+    if ($table === 'users') {
+        $email = trim($d['email'] ?? '');
+        $pass  = trim($d['password'] ?? '');
+        $name  = trim($d['name'] ?? explode('@', $email)[0]);
+        $role  = strtolower(trim($d['role'] ?? 'user'));
+
+        if (empty($email) || empty($pass)) {
+            die(json_encode(["error" => "Email y password obligatorios"]));
+        }
+
+        $sql = "INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) die(json_encode(["error" => "Error SQL Users: " . $conn->error]));
+
+        $stmt->bind_param("ssss", $email, $pass, $name, $role);
+        
+        if ($stmt->execute()) {
+            echo json_encode(["success" => true, "id" => $conn->insert_id]);
+        } else {
+            echo json_encode(["error" => $stmt->error]);
+        }
+        exit;
+    }
+}
+
+// --- MÉTODO GET: LECTURA DE TABLAS ---
 if ($method === 'GET' && $table !== '') {
     $allowed = ['events', 'user_roles', 'reviews', 'users'];
     if (!in_array($table, $allowed)) {
@@ -94,7 +137,7 @@ if ($method === 'GET' && $table !== '') {
     $rows = [];
     if ($res) {
         while($r = $res->fetch_assoc()) { 
-            if (isset($r['password'])) unset($r['password']);
+            if (isset($r['password'])) unset($r['password']); // No enviar contraseñas en los listados
             $rows[] = $r; 
         }
     }
@@ -102,6 +145,7 @@ if ($method === 'GET' && $table !== '') {
     exit;
 }
 
-echo json_encode(["status" => "online", "message" => "Listo para recibir datos"]);
+// Respuesta por defecto
+echo json_encode(["status" => "online", "message" => "API GLV Performance lista"]);
 $conn->close();
 ?>
