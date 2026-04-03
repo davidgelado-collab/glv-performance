@@ -11,7 +11,7 @@ header("Content-Type: application/json");
 // echo json_encode(["mensaje" => "PHP funcionando"]); exit;
 
 // DATOS DE CONEXIÓN - ¡Revísalos bien!
-$host = "aqb246.glvperformance.com"; 
+$host = "qaqb246.glvperformance.com"; 
 $user = "qaqb246"; 
 $pass = '@@07O5pmuxxx'; 
 $db   = "qaqb246";
