@@ -54,27 +54,40 @@ if ($action === 'login') {
     exit;
 }
 
-// --- MÉTODO PATCH / PUT: ACTUALIZAR DATOS (EDITAR USUARIO COMPLETO) ---
-if (($method === 'PATCH' || $method === 'PUT') && $table === 'users' && $id !== '') {
-    $name  = $d['name'] ?? '';
-    $email = $d['email'] ?? '';
-    $role  = strtolower(trim($d['role'] ?? 'user'));
-    $pass  = $d['password'] ?? null;
+// --- MÉTODO PATCH / PUT: ACTUALIZAR DATOS ---
+if (($method === 'PATCH' || $method === 'PUT') && $table !== '' && $id !== '') {
+    if ($table === 'users') {
+        $name  = $d['name'] ?? '';
+        $email = $d['email'] ?? '';
+        $role  = strtolower(trim($d['role'] ?? 'user'));
+        $pass  = $d['password'] ?? null;
 
-    if (!empty($pass)) {
-        // Si el admin escribió una contraseña, la actualizamos
-        $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, role = ?, password = ? WHERE id = ?");
-        $stmt->bind_param("sssss", $name, $email, $role, $pass, $id);
-    } else {
-        // Si la contraseña viene vacía, actualizamos el resto sin tocar la clave actual
-        $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?");
-        $stmt->bind_param("ssss", $name, $email, $role, $id);
+        if (!empty($pass)) {
+            $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, role = ?, password = ? WHERE id = ?");
+            $stmt->bind_param("sssss", $name, $email, $role, $pass, $id);
+        } else {
+            $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?");
+            $stmt->bind_param("ssss", $name, $email, $role, $id);
+        }
+    } 
+    // NUEVA SECCIÓN PARA EDITAR EVENTOS
+    else if ($table === 'events') {
+        $title = $d['title'] ?? '';
+        $desc  = $d['description'] ?? '';
+        $start = isset($d['start_datetime']) ? str_replace(['T', 'Z'], [' ', ''], substr($d['start_datetime'], 0, 19)) : date('Y-m-d H:i:s');
+        $end   = isset($d['end_datetime']) ? str_replace(['T', 'Z'], [' ', ''], substr($d['end_datetime'], 0, 19)) : $start;
+        $loc   = $d['location'] ?? '';
+        $img   = $d['image_url'] ?? '';
+        $priv  = (isset($d['is_private']) && $d['is_private'] == true) ? 1 : 0;
+
+        $stmt = $conn->prepare("UPDATE events SET title=?, description=?, start_datetime=?, end_datetime=?, location=?, image_url=?, is_private=? WHERE id=?");
+        $stmt->bind_param("ssssssis", $title, $desc, $start, $end, $loc, $img, $priv, $id);
     }
-    
-    if ($stmt->execute()) {
+
+    if (isset($stmt) && $stmt->execute()) {
         echo json_encode(["success" => true]);
     } else {
-        echo json_encode(["error" => $stmt->error]);
+        echo json_encode(["error" => $stmt->error ?? "Error desconocido"]);
     }
     exit;
 }
