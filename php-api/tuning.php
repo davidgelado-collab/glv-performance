@@ -1,17 +1,15 @@
 <?php
-// 1. Cabeceras para que React pueda comunicarse con el PHP
+// 1. Cabeceras corregidas para evitar bloqueos (CORS)
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json; charset=UTF-8");
 
-// Si es una petición OPTIONS (pre-vuelo), terminamos aquí
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-// 2. CONFIGURACIÓN DE TU BASE DE DATOS EN ARSYS
-// Cambia esto con los datos reales de tu panel de Arsys
+// 2. CONFIGURACIÓN (Verifica que estos datos sean correctos en tu panel de Arsys)
 $host = "localhost"; 
 $user = "USUARIO_DE_TU_BASE_DE_DATOS"; 
 $pass = "TU_CONTRASEÑA"; 
@@ -41,7 +39,9 @@ try {
                 "user" => [
                     "id" => (string)$user['id'],
                     "email" => $user['email'],
-                    "user_metadata" => ["full_name" => $user['name']],
+                    "name" => $user['name'], // Añadido para el perfil
+                    "user_metadata" => ["full_name" => $user['name'], "role" => $user['role']],
+                    "app_metadata" => ["role" => $user['role']],
                     "role" => $user['role']
                 ],
                 "session" => ["access_token" => "token_falso_arsys", "user" => $user]
@@ -54,7 +54,29 @@ try {
         }
     }
 
-    // --- LÓGICA DE REGISTRO (Para nuevos usuarios) ---
+    // --- LÓGICA DE ACTUALIZAR CONTRASEÑA (¡NUEVO!) ---
+    if (isset($_GET['action']) && $_GET['action'] == 'update_password') {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $new_pass = $data['password'] ?? '';
+        $user_id = $data['user_id'] ?? '';
+
+        if ($new_pass && $user_id) {
+            $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+            $stmt->bind_param("si", $new_pass, $user_id);
+            if ($stmt->execute()) {
+                echo json_encode(["success" => true, "message" => "Contraseña cambiada"]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["error" => "Error al guardar"]);
+            }
+        } else {
+            http_response_code(400);
+            echo json_encode(["error" => "Faltan datos"]);
+        }
+        exit;
+    }
+
+    // --- LÓGICA DE REGISTRO ---
     if (isset($_GET['action']) && $_GET['action'] == 'register') {
         $data = json_decode(file_get_contents('php://input'), true);
         $email = $data['email'] ?? '';
@@ -73,11 +95,10 @@ try {
         exit;
     }
 
-    // --- LÓGICA DE LECTURA DE TABLAS (Eventos, etc.) ---
+    // --- LÓGICA DE LECTURA DE TABLAS ---
     if (isset($_GET['table'])) {
         $table = $_GET['table'];
-        // Seguridad básica para evitar que lean tablas del sistema
-        $allowed = ['events', 'user_roles', 'reviews']; 
+        $allowed = ['events', 'user_roles', 'reviews', 'users']; // Añadido 'users' para que el admin pueda ver la lista
         if (!in_array($table, $allowed)) {
             throw new Exception("Tabla no permitida");
         }
@@ -85,7 +106,7 @@ try {
         $result = $conn->query("SELECT * FROM $table");
         $rows = [];
         while($row = $result->fetch_assoc()) {
-            // Convertimos booleanos de MySQL (0/1) a verdaderos booleanos para JS
+            if (isset($row['password'])) unset($row['password']); // No enviar contraseñas en listados
             foreach($row as $key => $val) {
                 if ($val === "1" || $val === "0") {
                     if ($key == 'is_private' || $key == 'approved') $row[$key] = (bool)$val;
