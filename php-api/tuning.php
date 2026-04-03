@@ -10,10 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // 2. CONFIGURACIÓN (Verifica que estos datos sean correctos en tu panel de Arsys)
-$host = "localhost"; 
-$user = "USUARIO_DE_TU_BASE_DE_DATOS"; 
-$pass = "TU_CONTRASEÑA"; 
-$db   = "NOMBRE_DE_TU_BASE_DE_DATOS";
+$host = "qaqb246.glvperformance.com"; 
+$user = "qaqb246"; 
+$pass = "@@07O5pmuxxx"; 
+$db   = "qaqb246";
 
 $conn = new mysqli($host, $user, $pass, $db);
 
