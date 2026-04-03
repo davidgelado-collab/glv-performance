@@ -17,10 +17,13 @@ if ($conn->connect_error) {
     die(json_encode(["error" => "Conexión fallida: " . $conn->connect_error]));
 }
 
-// --- LÓGICA DE LOGIN --- (Ya la tenías, se mantiene igual)
+// Obtenemos el método y los datos de entrada una sola vez
+$method = $_SERVER['REQUEST_METHOD'];
+$input = file_get_contents('php://input');
+$d = json_decode($input, true);
+
+// --- LÓGICA DE LOGIN ---
 if (isset($_GET['action']) && $_GET['action'] == 'login') {
-    $input = file_get_contents('php://input');
-    $d = json_decode($input, true);
     $e = trim($d['email'] ?? '');
     $p = trim($d['password'] ?? '');
     
@@ -36,7 +39,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'login') {
             "email" => $u['email'],
             "name" => $u['name'],
             "role" => $cleanRole,
-            "app_metadata" => ["role" => $cleanRole],
+            "app_metadata" => ["role" => $cleanRole, "roles" => [$cleanRole]],
             "user_metadata" => ["role" => $cleanRole, "full_name" => $u['name']]
         ];
         echo json_encode(["user" => $userData]);
@@ -47,11 +50,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'login') {
     exit;
 }
 
-// --- NUEVA LÓGICA: ACTUALIZAR CONTRASEÑA ---
+// --- ACTUALIZAR CONTRASEÑA ---
 if (isset($_GET['action']) && $_GET['action'] == 'update_password') {
-    $input = file_get_contents('php://input');
-    $d = json_decode($input, true);
-    
     $newPass = $d['password'] ?? '';
     $userId = $d['user_id'] ?? '';
     
@@ -61,16 +61,39 @@ if (isset($_GET['action']) && $_GET['action'] == 'update_password') {
         if ($s->execute()) {
             echo json_encode(["success" => true]);
         } else {
-            echo json_encode(["success" => false, "error" => "Error al actualizar"]);
+            echo json_encode(["success" => false, "error" => $conn->error]);
         }
-    } else {
-        echo json_encode(["success" => false, "error" => "Datos incompletos"]);
     }
     exit;
 }
 
-// --- LECTURA DE TABLAS --- (Se mantiene igual)
-if (isset($_GET['table'])) {
+// --- CREAR / INSERTAR DATOS (POST) ---
+if ($method === 'POST' && isset($_GET['table'])) {
+    $t = $_GET['table'];
+    
+    if ($t === 'events') {
+        // Mapeamos los datos que envía Lovable a las columnas de tu BD
+        $title = $d['title'] ?? 'Sin título';
+        $start = $d['start_datetime'] ?? date('Y-m-d H:i:s');
+        $end = $d['end_datetime'] ?? $start;
+        $loc = $d['location'] ?? '';
+        $desc = $d['description'] ?? '';
+        $private = isset($d['is_private']) && $d['is_private'] ? 1 : 0;
+
+        $stmt = $conn->prepare("INSERT INTO events (title, start_datetime, end_datetime, location, description, is_private) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssi", $title, $start, $end, $loc, $desc, $private);
+        
+        if ($stmt->execute()) {
+            echo json_encode(["id" => $conn->insert_id, "success" => true]);
+        } else {
+            echo json_encode(["error" => $conn->error]);
+        }
+        exit;
+    }
+}
+
+// --- LECTURA DE TABLAS (GET) ---
+if ($method === 'GET' && isset($_GET['table'])) {
     $t = $_GET['table'];
     $allowed = ['events', 'user_roles', 'reviews', 'users'];
     if (!in_array($t, $allowed)) {
