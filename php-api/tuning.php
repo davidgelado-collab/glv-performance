@@ -4,7 +4,8 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
+// Añadimos PATCH y PUT a los métodos permitidos
+header("Access-Control-Allow-Methods: GET, POST, DELETE, PATCH, PUT, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
@@ -23,6 +24,7 @@ $input = file_get_contents('php://input');
 $d = json_decode($input, true);
 $table = $_GET['table'] ?? '';
 $action = $_GET['action'] ?? '';
+$id = $_GET['id'] ?? ''; // Capturamos el ID para updates y deletes
 
 // --- ACCIÓN: LOGIN ---
 if ($action === 'login') {
@@ -51,6 +53,25 @@ if ($action === 'login') {
         echo json_encode(["error" => "Email o contraseña incorrectos"]);
     }
     exit;
+}
+
+// --- MÉTODO PATCH / PUT: ACTUALIZAR DATOS (EDITAR) ---
+if (($method === 'PATCH' || $method === 'PUT') && $table !== '' && $id !== '') {
+    if ($table === 'users') {
+        $name = $d['name'] ?? '';
+        $role = strtolower(trim($d['role'] ?? 'user'));
+        
+        $stmt = $conn->prepare("UPDATE users SET name = ?, role = ? WHERE id = ?");
+        $stmt->bind_param("sss", $name, $role, $id);
+        
+        if ($stmt->execute()) echo json_encode(["success" => true]);
+        else echo json_encode(["error" => $stmt->error]);
+        exit;
+    }
+    
+    if ($table === 'events') {
+        // Aquí podrías añadir la lógica para editar eventos si lo necesitas más adelante
+    }
 }
 
 // --- MÉTODO POST: INSERTAR DATOS ---
@@ -102,7 +123,6 @@ if ($method === 'GET' && $table !== '') {
 
 // --- MÉTODO DELETE: ELIMINAR ---
 if ($method === 'DELETE' && $table !== '') {
-    $id = $_GET['id'] ?? '';
     if (!$id) die(json_encode(["error" => "ID no proporcionado"]));
 
     $stmt = $conn->prepare("DELETE FROM $table WHERE id = ?");
