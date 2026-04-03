@@ -4,7 +4,6 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 header("Access-Control-Allow-Origin: *");
-// Añadimos PATCH y PUT a los métodos permitidos
 header("Access-Control-Allow-Methods: GET, POST, DELETE, PATCH, PUT, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
@@ -24,7 +23,7 @@ $input = file_get_contents('php://input');
 $d = json_decode($input, true);
 $table = $_GET['table'] ?? '';
 $action = $_GET['action'] ?? '';
-$id = $_GET['id'] ?? ''; // Capturamos el ID para updates y deletes
+$id = $_GET['id'] ?? '';
 
 // --- ACCIÓN: LOGIN ---
 if ($action === 'login') {
@@ -55,23 +54,29 @@ if ($action === 'login') {
     exit;
 }
 
-// --- MÉTODO PATCH / PUT: ACTUALIZAR DATOS (EDITAR) ---
-if (($method === 'PATCH' || $method === 'PUT') && $table !== '' && $id !== '') {
-    if ($table === 'users') {
-        $name = $d['name'] ?? '';
-        $role = strtolower(trim($d['role'] ?? 'user'));
-        
-        $stmt = $conn->prepare("UPDATE users SET name = ?, role = ? WHERE id = ?");
-        $stmt->bind_param("sss", $name, $role, $id);
-        
-        if ($stmt->execute()) echo json_encode(["success" => true]);
-        else echo json_encode(["error" => $stmt->error]);
-        exit;
+// --- MÉTODO PATCH / PUT: ACTUALIZAR DATOS (EDITAR USUARIO COMPLETO) ---
+if (($method === 'PATCH' || $method === 'PUT') && $table === 'users' && $id !== '') {
+    $name  = $d['name'] ?? '';
+    $email = $d['email'] ?? '';
+    $role  = strtolower(trim($d['role'] ?? 'user'));
+    $pass  = $d['password'] ?? null;
+
+    if (!empty($pass)) {
+        // Si el admin escribió una contraseña, la actualizamos
+        $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, role = ?, password = ? WHERE id = ?");
+        $stmt->bind_param("sssss", $name, $email, $role, $pass, $id);
+    } else {
+        // Si la contraseña viene vacía, actualizamos el resto sin tocar la clave actual
+        $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?");
+        $stmt->bind_param("ssss", $name, $email, $role, $id);
     }
     
-    if ($table === 'events') {
-        // Aquí podrías añadir la lógica para editar eventos si lo necesitas más adelante
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true]);
+    } else {
+        echo json_encode(["error" => $stmt->error]);
     }
+    exit;
 }
 
 // --- MÉTODO POST: INSERTAR DATOS ---
