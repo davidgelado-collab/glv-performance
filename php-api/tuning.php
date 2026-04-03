@@ -11,10 +11,10 @@ header("Content-Type: application/json");
 // echo json_encode(["mensaje" => "PHP funcionando"]); exit;
 
 // DATOS DE CONEXIÓN - ¡Revísalos bien!
-$host = "localhost"; 
+$host = "aqb246.glvperformance.com"; 
 $user = "qaqb246"; 
 $pass = '@@07O5pmuxxx'; 
-$db   = "tu_base_de_datos";
+$db   = "qaqb246";
 
 // Intentar conectar con un bloque try/catch manual
 try {
