@@ -13,7 +13,7 @@ header("Content-Type: application/json");
 // DATOS DE CONEXIÓN - ¡Revísalos bien!
 $host = "localhost"; 
 $user = "qaqb246"; 
-$pass = 'tu_password_de_arsys'; 
+$pass = '@@07O5pmuxxx'; 
 $db   = "tu_base_de_datos";
 
 // Intentar conectar con un bloque try/catch manual
