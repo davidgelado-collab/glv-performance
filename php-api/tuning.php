@@ -1,54 +1,44 @@
-// --- LÓGICA DE LOGIN REFORZADA ---
+<?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Content-Type: application/json");
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') exit;
+
+$conn = new mysqli("qaqb246.glvperformance.com", "qaqb246", "@@07O5pmuxxx", "qaqb246");
+
 if (isset($_GET['action']) && $_GET['action'] == 'login') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    
-    // Limpiamos posibles espacios en blanco
-    $email = isset($data['email']) ? trim($data['email']) : '';
-    $pass  = isset($data['password']) ? trim($data['password']) : '';
-
-    $stmt = $conn->prepare("SELECT id, email, password, name, role FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-
-    // Comprobación simple de texto plano (Asegúrate que en la DB esté igual)
-    if ($user && $pass === $user['password']) {
-        // Quitamos la pass por seguridad
-        unset($user['password']); 
-        
-        // Estructura limpia para que el client.ts no se líe
-        echo json_encode([
-            "user" => [
-                "id" => (string)$user['id'],
-                "email" => $user['email'],
-                "name" => $user['name'],
-                "role" => $user['role']
-            ]
-        ]);
-        exit;
+    $d = json_decode(file_get_contents('php://input'), true);
+    $e = $d['email'] ?? '';
+    $p = $d['password'] ?? '';
+    $s = $conn->prepare("SELECT id, email, password, name, role FROM users WHERE email = ?");
+    $s->bind_param("s", $e);
+    $s->execute();
+    $u = $s->get_result()->fetch_assoc();
+    if ($u && $p === $u['password']) {
+        unset($u['password']);
+        echo json_encode(["user" => $u]);
     } else {
         http_response_code(401);
-        echo json_encode(["error" => "Credenciales incorrectas"]);
-        exit;
+        echo json_encode(["error" => "fail"]);
     }
+    exit;
 }
 
-// --- LÓGICA DE ACTUALIZAR CONTRASEÑA ---
 if (isset($_GET['action']) && $_GET['action'] == 'update_password') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $new_pass = $data['password'] ?? '';
-    $user_id = $data['user_id'] ?? '';
+    $d = json_decode(file_get_contents('php://input'), true);
+    $s = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+    $s->bind_param("ss", $d['password'], $d['user_id']);
+    echo json_encode(["success" => $s->execute()]);
+    exit;
+}
 
-    if ($new_pass && $user_id) {
-        $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-        $stmt->bind_param("si", $new_pass, $user_id);
-        if ($stmt->execute()) {
-            echo json_encode(["success" => true]);
-        } else {
-            http_response_code(500);
-            echo json_encode(["error" => "Error en DB"]);
-        }
-    }
+if (isset($_GET['table'])) {
+    $t = $_GET['table'];
+    $res = $conn->query("SELECT * FROM $t");
+    $rows = [];
+    while($r = $res->fetch_assoc()) { $rows[] = $r; }
+    echo json_encode($rows);
     exit;
 }
