@@ -1,44 +1,51 @@
 <?php
-// Configuración de cabeceras para React
+// Forzar que los errores se vean sí o sí
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Cabeceras básicas
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json");
 
-// Manejo de peticiones OPTIONS (Preflight)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit;
-}
+// TEST 1: Si ves esto en el navegador, el PHP funciona
+// echo json_encode(["mensaje" => "PHP funcionando"]); exit;
 
-// Datos de conexión (Usa los mismos que en glv-performance)
+// DATOS DE CONEXIÓN - ¡Revísalos bien!
 $host = "localhost"; 
-$user = "TU_USUARIO_ARSYS";
-$pass = "TU_PASSWORD_ARSYS";
-$db   = "TU_BASE_DE_DATOS_COMPARTIDA";
+$user = "tu_usuario_de_arsys"; 
+$pass = 'tu_password_de_arsys'; 
+$db   = "tu_base_de_datos";
 
-$conn = new mysqli($host, $user, $pass, $db);
+// Intentar conectar con un bloque try/catch manual
+try {
+    $conn = new mysqli($host, $user, $pass, $db);
 
-if ($conn->connect_error) {
-    die(json_encode(["error" => "Conexión fallida: " . $conn->connect_error]));
-}
-
-$method = $_SERVER['REQUEST_METHOD'];
-$table = isset($_GET['table']) ? $_GET['table'] : 'items';
-
-// Evitar inyección SQL básica en el nombre de la tabla
-$table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
-
-if ($method === 'GET') {
-    $result = $conn->query("SELECT * FROM $table");
-    $rows = [];
-    if ($result) {
-        while($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
+    if ($conn->connect_error) {
+        throw new Exception("Fallo de conexión: " . $conn->connect_error);
     }
-    // Devolvemos el formato exacto que espera la app
-    echo json_encode($rows);
-}
 
-$conn->close();
+    $table = isset($_GET['table']) ? $_GET['table'] : 'items';
+    $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+
+    $result = $conn->query("SELECT * FROM $table LIMIT 10");
+
+    if (!$result) {
+        throw new Exception("Error en la consulta: " . $conn->error);
+    }
+
+    $rows = [];
+    while($row = $result->fetch_assoc()) {
+        $rows[] = $row;
+    }
+
+    echo json_encode($rows);
+
+} catch (Exception $e) {
+    // Si algo falla, esto evita el Error 500 y te dice qué es
+    http_response_code(200); // Engañamos al servidor para que no de Error 500
+    echo json_encode([
+        "error" => true,
+        "mensaje" => $e->getMessage()
+    ]);
+}
 ?>
