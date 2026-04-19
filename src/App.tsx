@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import Feedback from "./pages/Feedback.tsx";
 import Admin from "./pages/Admin.tsx";
+import ReproEcu from "./pages/reproecu.tsx"; // 1. Importamos tu nueva página
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,10 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/admin" element={<Admin />} />
+          
+          {/* 2. Añadimos la ruta específica para la página de Reprogramación */}
+          <Route path="/reprogramacion-ecu" element={<ReproEcu />} />
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
