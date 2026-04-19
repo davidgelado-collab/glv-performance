@@ -8,6 +8,7 @@ import ReviewsSection from "@/components/ReviewsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import ScrollToTop from "@/components/ScrollToTop"; // 1. Importamos la flecha
 
 const Index = () => {
   const [vehiclePreset, setVehiclePreset] = useState("");
@@ -16,13 +17,9 @@ const Index = () => {
     <div className="relative min-h-screen bg-background">
       <Navbar />
       
-      {/* Envolvemos el contenido en un main para mejor estructura */}
       <main className="flex flex-col">
         <HeroSection />
         
-        {/* Usamos scroll-mt-24 para que al hacer scroll desde el móvil, 
-          la sección no quede tapada por el Navbar fijo.
-        */}
         <div id="servicios" className="scroll-mt-24">
           <ServicesSection />
         </div>
@@ -46,6 +43,7 @@ const Index = () => {
 
       <Footer />
       <WhatsAppButton />
+      <ScrollToTop /> {/* 2. La añadimos aquí */}
     </div>
   );
 };
