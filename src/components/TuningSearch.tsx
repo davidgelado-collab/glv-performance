@@ -51,10 +51,8 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
     [brand, fullModelName]
   );
 
-  // --- LÓGICA DE AGRUPACIÓN ESTILO ALIENSHOP ---
   const groupedEngines = useMemo(() => {
     return enginesList.reduce((acc, eng) => {
-      // Normalizamos el nombre del combustible
       const fuel = eng.fuel.toLowerCase().includes("diesel") ? "DIÉSEL" : "GASOLINA";
       if (!acc[fuel]) acc[fuel] = [];
       acc[fuel].push(eng.name);
@@ -139,8 +137,6 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
             onChange={handleGenerationChange}
             disabled={!model || generations.length === 0}
           />
-          
-          {/* CAMPO MOTOR CON AGRUPACIÓN */}
           <SelectField
             label="Motor"
             placeholder="Selecciona motor"
@@ -160,8 +156,7 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
               exit={{ opacity: 0, y: -10 }}
               className="mx-auto max-w-4xl"
             >
-              {/* Contenido de resultados... (Igual que el tuyos) */}
-              <div className="mb-6 rounded-sm border border-border bg-card p-6">
+              <div className="mb-6 rounded-sm border border-border bg-card p-6 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <h3 className="font-display text-2xl font-bold uppercase">
@@ -195,10 +190,11 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
                 />
               </div>
 
-              <div className="mt-6 rounded-sm border border-primary/30 bg-primary/5 p-6 text-center">
+              {/* AQUÍ HE ELIMINADO EL CUADRO ROJO/NARANJA Y MEJORADO EL BOTÓN */}
+              <div className="mt-12 text-center">
                 <button
                   onClick={handlePresupuestoClick}
-                  className="inline-block cursor-pointer rounded-sm bg-primary px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all hover:bg-primary/80"
+                  className="inline-block cursor-pointer rounded-sm bg-primary px-12 py-4 font-display text-base font-bold uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:bg-primary/90"
                 >
                   Solicitar Presupuesto
                 </button>
@@ -211,7 +207,6 @@ const TuningSearch = ({ onRequestQuote }: TuningSearchProps) => {
   );
 };
 
-// --- SELECTFIELD ACTUALIZADO PARA SOPORTAR AGRUPACIÓN ---
 function SelectField({
   label,
   placeholder,
@@ -242,8 +237,6 @@ function SelectField({
           className="w-full appearance-none rounded-sm border border-border bg-card px-4 py-3 pr-10 font-body text-sm text-foreground transition-colors focus:border-primary focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
         >
           <option value="">{placeholder}</option>
-          
-          {/* Si hay opciones agrupadas (Motores) */}
           {groupedOptions ? (
             Object.entries(groupedOptions).map(([fuel, engs]) => (
               <optgroup key={fuel} label={fuel} className="bg-muted text-primary font-bold">
@@ -255,7 +248,6 @@ function SelectField({
               </optgroup>
             ))
           ) : (
-            /* Si son opciones normales (Marca, Modelo, Generación) */
             options?.map((opt) => (
               <option key={opt} value={opt}>
                 {opt}
@@ -269,7 +261,6 @@ function SelectField({
   );
 }
 
-// Mantener PowerCard igual...
 function PowerCard({
   icon,
   title,
@@ -287,7 +278,7 @@ function PowerCard({
   const pct = Math.round((gain / original) * 100);
 
   return (
-    <div className="rounded-sm border border-border bg-card p-6">
+    <div className="rounded-sm border border-border bg-card p-6 shadow-sm">
       <div className="mb-4 flex items-center gap-2 text-muted-foreground">
         {icon}
         <span className="font-body text-sm uppercase tracking-wider">{title}</span>
