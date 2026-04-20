@@ -1,4 +1,6 @@
 import { useState } from "react";
+// 1. Importamos Link y useLocation para gestionar la navegación
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import logoGlv from "@/assets/logo-glv.png";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,46 +15,32 @@ const navItems = [
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  // 2. Obtenemos la ubicación actual
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
-  const scrollToSection = (id: string) => {
-    // 1. Cerramos el menú inmediatamente
-    setOpen(false); 
-
-    // 2. Esperamos a que la animación de cierre termine para que el scroll sea preciso
-    setTimeout(() => {
-      const element = document.getElementById(id);
-      if (element) {
-        const offset = 90; 
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = element.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition - offset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth"
-        });
-      }
-    }, 300); // 300ms es el tiempo ideal para móviles
+  const handleLinkClick = () => {
+    // Cerramos el menú en móvil al pulsar
+    setOpen(false);
   };
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-border/30 bg-background/70 backdrop-blur-lg">
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
-        <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="flex items-center">
+        {/* LOGO: Siempre lleva a la Home y hace scroll arriba */}
+        <Link to="/" className="flex items-center" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
           <img src={logoGlv} alt="GLV Performance" className="h-[5.625rem] w-auto" />
-        </button>
+        </Link>
 
-        {/* Desktop */}
+        {/* Desktop - Usamos componente reutilizable */}
         <div className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
-            <button
+            <NavAction
               key={item.label}
-              onClick={() => scrollToSection(item.id)}
+              item={item}
+              isHome={isHome}
               className="font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors duration-150 hover:text-primary cursor-pointer outline-none"
-            >
-              {item.label}
-            </button>
+            />
           ))}
         </div>
 
@@ -78,20 +66,69 @@ const Navbar = () => {
           >
             <div className="container mx-auto flex flex-col px-6 py-4">
               {navItems.map((item) => (
-                <button
+                <NavAction
                   key={item.label}
-                  // Cambiado para que use la nueva lógica con timeout
-                  onClick={() => scrollToSection(item.id)} 
+                  item={item}
+                  isHome={isHome}
+                  onClick={handleLinkClick} // Cierra el menú al pulsar
                   className="text-left font-body text-sm uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary py-4 border-b border-border/50 last:border-none"
-                >
-                  {item.label}
-                </button>
+                />
               ))}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </nav>
+  );
+};
+
+// --- COMPONENTE AUXILIAR PARA COMPORTAMIENTO INTELIGENTE ---
+// Reemplaza tus <button> originales y gestiona si es scroll suave o navegación.
+const NavAction = ({
+  item,
+  isHome,
+  className,
+  onClick,
+}: {
+  item: { label: string; id: string };
+  isHome: boolean;
+  className: string;
+  onClick?: () => void;
+}) => {
+  // Función para scroll suave (tu lógica original mejorada)
+  const scrollToSection = () => {
+    // Offset para el Navbar fijo
+    const offset = 90;
+    const element = document.getElementById(item.id);
+
+    if (element) {
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+    // Llama a onClick si existe (ej. para cerrar el menú móvil)
+    if (onClick) onClick();
+  };
+
+  // --- LÓGICA CLAVE ---
+  // Si estamos en la Home, usamos un botón con scroll suave.
+  if (isHome) {
+    return (
+      <button onClick={scrollToSection} className={className}>
+        {item.label}
+      </button>
+    );
+  }
+
+  // Si estamos en otra página, usamos un Link para navegar a la Home + Ancla (/#servicios).
+  return (
+    <Link to={`/#${item.id}`} className={className} onClick={onClick}>
+      {item.label}
+    </Link>
   );
 };
 
