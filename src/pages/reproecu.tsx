@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton"; // Importamos WhatsApp
+import WhatsAppButton from "@/components/WhatsAppButton";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
@@ -11,7 +11,6 @@ const ServiceDetail = () => {
   const navigate = useNavigate();
 
   const handleContactClick = () => {
-    // Navega a la home y busca la sección de contacto
     navigate("/");
     setTimeout(() => {
       const element = document.getElementById("contacto");
@@ -23,7 +22,7 @@ const ServiceDetail = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      {/* BOTÓN VOLVER FLOTANTE (Superior Izquierda) */}
+      {/* BOTÓN VOLVER FLOTANTE */}
       <div className="fixed top-24 left-6 z-[60] hidden md:block">
         <Link to="/">
           <Button 
@@ -37,7 +36,6 @@ const ServiceDetail = () => {
       </div>
 
       <div className="container mx-auto px-6 pt-32 pb-24">
-        {/* Enlace volver normal (para móvil o si no se ve el flotante) */}
         <Link to="/" className="inline-flex items-center text-primary hover:underline mb-8 md:hidden">
           <ArrowLeft className="mr-2 h-4 w-4" /> Volver al inicio
         </Link>
@@ -53,7 +51,6 @@ const ServiceDetail = () => {
           </p>
         </motion.div>
 
-        {/* LOS TRES CUADROS IGUALES */}
         <div className="grid gap-8 md:grid-cols-3">
           {[
             {
@@ -102,20 +99,25 @@ const ServiceDetail = () => {
           ))}
         </div>
 
+        {/* SECCIÓN DEL BOTÓN ACTUALIZADA CON MOTION */}
         <div className="mt-16 text-center">
-          <Button 
-            size="lg" 
-            className="px-12 py-8 text-xl uppercase font-bold hover:scale-105 transition-transform"
-            onClick={handleContactClick}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            Solicitar Presupuesto
-          </Button>
+            <Button 
+              size="lg" 
+              className="px-12 py-8 text-xl uppercase font-bold shadow-lg shadow-primary/20"
+              onClick={handleContactClick}
+            >
+              Solicitar Presupuesto
+            </Button>
+          </motion.div>
         </div>
       </div>
 
       <Footer />
-      
-      {/* ELEMENTOS FLOTANTES */}
       <WhatsAppButton />
       <ScrollToTop />
     </div>
