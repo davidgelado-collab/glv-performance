@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-center"; // Eliminado ArrowLeft
+import { CheckCircle2 } from "lucide-react"; // ✅ CORREGIDO: De center a react
 import { motion } from "framer-motion";
 
 const ServiceDetail = () => {
