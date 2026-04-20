@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom"; // IMPORTANTE: Añadimos esto
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin, CheckCircle } from "lucide-react";
@@ -11,7 +11,7 @@ interface ContactSectionProps {
 const API_BASE = "https://glvperformance.com/api";
 
 const ContactSection = ({ vehiclePreset = "" }: ContactSectionProps) => {
-  const [searchParams] = useSearchParams(); // Hook para leer la URL
+  const [searchParams] = useSearchParams();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [vehicle, setVehicle] = useState("");
@@ -21,14 +21,10 @@ const ContactSection = ({ vehiclePreset = "" }: ContactSectionProps) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Lógica de autorelleno:
-    // 1. Miramos si hay un vehículo en la URL (?vehiculo=...)
-    // 2. Si no, usamos el vehiclePreset (si lo hubiera)
     const vehicleFromUrl = searchParams.get("vehiculo");
     
     if (vehicleFromUrl) {
       setVehicle(vehicleFromUrl);
-      // Opcional: Escribimos un inicio de mensaje automático
       setMessage(`Hola, solicito presupuesto para Stage 1 de mi ${vehicleFromUrl}.`);
     } else if (vehiclePreset) {
       setVehicle(vehiclePreset);
@@ -137,7 +133,7 @@ const ContactSection = ({ vehiclePreset = "" }: ContactSectionProps) => {
                   onChange={(e) => setName(e.target.value)}
                   required
                   maxLength={100}
-                  className="rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                  className="rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors"
                 />
                 <input
                   type="email"
@@ -146,7 +142,7 @@ const ContactSection = ({ vehiclePreset = "" }: ContactSectionProps) => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   maxLength={255}
-                  className="rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                  className="rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors"
                 />
               </div>
               <input
@@ -155,7 +151,7 @@ const ContactSection = ({ vehiclePreset = "" }: ContactSectionProps) => {
                 value={vehicle}
                 onChange={(e) => setVehicle(e.target.value)}
                 maxLength={200}
-                className="w-full rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                className="w-full rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors"
               />
               <textarea
                 rows={4}
@@ -164,14 +160,27 @@ const ContactSection = ({ vehiclePreset = "" }: ContactSectionProps) => {
                 onChange={(e) => setMessage(e.target.value)}
                 required
                 maxLength={2000}
-                className="w-full resize-none rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                className="w-full resize-none rounded-sm border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors"
               />
               {error && (
                 <p className="font-body text-sm text-destructive">{error}</p>
               )}
-              <Button variant="hero" size="lg" className="w-full" disabled={loading}>
-                {loading ? "Enviando..." : "Enviar Consulta"}
-              </Button>
+              
+              {/* BOTÓN CON EFECTO SCALE 105 Y CLICK */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <Button 
+                  variant="hero" 
+                  size="lg" 
+                  className="w-full shadow-lg shadow-primary/20" 
+                  disabled={loading}
+                >
+                  {loading ? "Enviando..." : "Enviar Consulta"}
+                </Button>
+              </motion.div>
             </motion.form>
           )}
         </div>
