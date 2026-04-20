@@ -1,10 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-center"; // Eliminado ArrowLeft
 import { motion } from "framer-motion";
 
 const ServiceDetail = () => {
@@ -14,7 +14,18 @@ const ServiceDetail = () => {
     navigate("/");
     setTimeout(() => {
       const element = document.getElementById("contacto");
-      if (element) element.scrollIntoView({ behavior: "smooth" });
+      if (element) {
+        const offset = 90;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = element.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
     }, 100);
   };
 
@@ -22,24 +33,7 @@ const ServiceDetail = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      {/* BOTÓN VOLVER FLOTANTE */}
-      <div className="fixed top-24 left-6 z-[60] hidden md:block">
-        <Link to="/">
-          <Button 
-            variant="outline" 
-            className="gap-2 bg-background/80 backdrop-blur-sm border-primary/20 hover:bg-primary hover:text-primary-foreground transition-all shadow-lg"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            INICIO / VOLVER
-          </Button>
-        </Link>
-      </div>
-
-      <div className="container mx-auto px-6 pt-32 pb-24">
-        <Link to="/" className="inline-flex items-center text-primary hover:underline mb-8 md:hidden">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Volver al inicio
-        </Link>
-
+      <div className="container mx-auto px-6 pt-40 pb-24">
         {/* CABECERA AMPLIADA */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -55,6 +49,7 @@ const ServiceDetail = () => {
           </p>
         </motion.div>
 
+        {/* GRILLA DE STAGES */}
         <div className="grid gap-8 md:grid-cols-3">
           {[
             {
@@ -103,6 +98,7 @@ const ServiceDetail = () => {
           ))}
         </div>
 
+        {/* SECCIÓN DEL BOTÓN */}
         <div className="mt-16 text-center">
           <motion.div
             whileHover={{ scale: 1.05 }}
