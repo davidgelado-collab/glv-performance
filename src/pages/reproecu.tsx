@@ -40,13 +40,17 @@ const ServiceDetail = () => {
           <ArrowLeft className="mr-2 h-4 w-4" /> Volver al inicio
         </Link>
 
+        {/* CABECERA AMPLIADA */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="mb-16"
         >
-          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase mb-6">Reprogramación ECU</h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mb-12">
+          <h1 className="text-4xl md:text-7xl font-display font-bold uppercase mb-6 leading-tight">
+            Reprogramación ECU
+          </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground w-full mb-12 leading-relaxed">
             Optimización de software de motor a medida. Máximo rendimiento manteniendo la fiabilidad mecánica.
           </p>
         </motion.div>
@@ -99,7 +103,6 @@ const ServiceDetail = () => {
           ))}
         </div>
 
-        {/* SECCIÓN DEL BOTÓN ACTUALIZADA CON MOTION */}
         <div className="mt-16 text-center">
           <motion.div
             whileHover={{ scale: 1.05 }}
