@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const navItems = [
-  { label: "Inicio", id: "hero" }, // Añadido Inicio
+  { label: "Inicio", id: "hero" },
   { label: "Servicios", id: "servicios" },
   { label: "Buscador", id: "buscador" },
   { label: "Trabajos", id: "trabajos" },
@@ -19,47 +19,53 @@ const Navbar = () => {
   const navigate = useNavigate();
   const isHome = location.pathname === "/";
 
+  // Función interna para realizar el scroll con el offset correcto
+  const performScroll = (id: string) => {
+    if (id === "hero") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 90;
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  };
+
   const handleNavClick = (id: string) => {
     setOpen(false);
 
     if (isHome) {
-      // Si ya estamos en Home, scroll suave normal
-      const element = document.getElementById(id);
-      if (id === "hero") {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } else if (element) {
-        const offset = 90;
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = element.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition - offset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth"
-        });
-      }
+      // Caso 1: Ya estamos en Home, scroll directo
+      performScroll(id);
     } else {
-      // Si NO estamos en Home, navegamos a la raíz con el hash
-      if (id === "hero") {
-        navigate("/");
-        window.scrollTo(0, 0);
-      } else {
-        navigate(`/#${id}`);
-        // Nota: El navegador detectará el id al cargar la home.
-      }
+      // Caso 2: Estamos en otra página (reproecu, etc)
+      // 1. Navegamos a la home
+      navigate("/");
+      
+      // 2. Esperamos a que el DOM de la home cargue para hacer el scroll
+      setTimeout(() => {
+        performScroll(id);
+      }, 100); // 100ms es suficiente para que React renderice la Home
     }
   };
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-border/30 bg-background/70 backdrop-blur-lg">
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
-        {/* LOGO clickable para volver arriba/home */}
         <button onClick={() => handleNavClick("hero")} className="flex items-center">
           <img src={logoGlv} alt="GLV Performance" className="h-[5.625rem] w-auto" />
         </button>
 
-        {/* Desktop Navigation */}
         <div className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
             <button
@@ -72,7 +78,6 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Mobile toggle */}
         <button
           onClick={() => setOpen(!open)}
           className="text-foreground md:hidden p-2"
@@ -82,7 +87,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {open && (
           <motion.div
